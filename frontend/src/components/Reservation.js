@@ -134,12 +134,12 @@ const Reservation = () => {
         </div>
 
         <div className="form-group">
-          <label>Nombre</label>
+          <label>Torre - Piso - Dpto</label>
           <input
             type="text"
             value={userName}
             onChange={e => setUserName(e.target.value)}
-            placeholder="Tu nombre"
+            placeholder="Torre - Piso - Dpto"
             required
           />
         </div>
