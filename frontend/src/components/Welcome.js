@@ -26,7 +26,6 @@ const Welcome = () => {
   const checkServerStatus = async () => {
     try {
       // Aquí puedes hacer una petición a tu API para verificar si está lista
-      // Por ejemplo, un endpoint simple que responda rápido
       const response = await fetch('/api/health-check');
       if (response.ok) {
         setServerReady(true);
@@ -47,7 +46,7 @@ const Welcome = () => {
     // Verificar inmediatamente si el servidor está listo
     checkServerStatus().then((isReady) => {
       if (!isReady) {
-        // Si no está listo, configuramos los intervalos
+        // Si no está listo, configuramos los intervalos de mensajes
         messageInterval = setInterval(() => {
           const randomIndex = Math.floor(Math.random() * motivationalMessages.length);
           setMotivationalMessage(motivationalMessages[randomIndex]);
@@ -65,12 +64,19 @@ const Welcome = () => {
       }
     });
 
+    // Si el servidor está listo rápidamente, cancelamos los intervalos y la lógica de espera
+    if (serverReady) {
+      clearInterval(messageInterval);
+      clearInterval(statusCheckInterval);
+      clearTimeout(timeout);
+    }
+
     return () => {
       clearInterval(messageInterval);
       clearInterval(statusCheckInterval);
       clearTimeout(timeout);
     };
-  }, []);
+  }, [serverReady]);
 
   if (isLoading && !serverReady) {
     return (
