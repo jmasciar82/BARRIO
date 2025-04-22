@@ -81,7 +81,7 @@ const Welcome = () => {
   if (isLoading && !serverReady) {
     return (
       <div className="welcome-container loading">
-        <h1>Preparando tu experiencia en el Barrio Tiro Federal</h1>
+        <h1>Barrio Tiro Federal</h1>
         <div className="loading-spinner"></div>
         <p className="motivational-message">{motivationalMessage}</p>
         <p className="loading-text">Cargando, por favor espera...</p>
