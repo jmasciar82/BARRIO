@@ -15,18 +15,21 @@ const Reservation = () => {
   const [reservations, setReservations] = useState([]);
   const [message, setMessage] = useState({ text: '', type: '' });
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isLoading, setIsLoading] = useState(true); // nuevo estado
 
   // Normaliza la fecha a medianoche UTC (00:00:00.000Z)
   const normalizeDate = (date) => {
     const d = new Date(date);
-    d.setUTCHours(0, 0, 0, 0);  // Asegura que la fecha sea a medianoche UTC
+    d.setUTCHours(0, 0, 0, 0);
     return d;
   };
 
   // Fetch de las reservas desde el backend
   const fetchReservations = useCallback(async (date) => {
     try {
+      setIsLoading(true); // Activamos loading
       const response = await axios.get(`${backendURL}/reservations/${normalizeDate(date).toISOString()}`);
+      await new Promise(resolve => setTimeout(resolve, 5000)); // Delay artificial de 5 segundos
       setReservations(response.data.map(res => ({
         ...res,
         date: new Date(res.date),
@@ -34,6 +37,8 @@ const Reservation = () => {
     } catch (err) {
       console.error('Error fetching reservations:', err);
       setMessage({ text: 'Error al obtener reservas', type: 'error' });
+    } finally {
+      setIsLoading(false); // Finalizamos loading
     }
   }, []);
 
@@ -41,7 +46,6 @@ const Reservation = () => {
     fetchReservations(selectedDate);
   }, [selectedDate, fetchReservations]);
 
-  // Verifica si una parrilla está reservada para una fecha y turno específicos
   const isGrillReserved = (grillNum, shiftType) => {
     return reservations.some(r => (
       r.grillNumber === grillNum &&
@@ -50,7 +54,6 @@ const Reservation = () => {
     ));
   };
 
-  // Encuentra el nombre del usuario que reservó una parrilla en un turno específico
   const findReservationUser = (grillNum, shiftType) => {
     const reservation = reservations.find(r => (
       r.grillNumber === grillNum &&
@@ -60,7 +63,6 @@ const Reservation = () => {
     return reservation ? reservation.user : '';
   };
 
-  // Maneja el envío del formulario
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -77,7 +79,7 @@ const Reservation = () => {
 
     try {
       await axios.post(`${backendURL}/reservations`, {
-        date: normalizeDate(selectedDate),  // Pasamos la fecha normalizada
+        date: normalizeDate(selectedDate),
         shift,
         grillNumber,
         user: userName,
@@ -155,24 +157,29 @@ const Reservation = () => {
 
       <div className="availability-table">
         <h3>Estado de Reservas - {format(selectedDate, 'PPPP', { locale: es })}</h3>
-        <table>
-          <thead>
-            <tr>
-              <th>Parrilla</th>
-              <th>Mañana (12-18hs)</th>
-              <th>Noche (19-24hs)</th>
-            </tr>
-          </thead>
-          <tbody>
-            {[1, 2, 3, 4, 5].map(num => (
-              <tr key={num}>
-                <td>{num}</td>
-                <td>{isGrillReserved(num, 'dia') ? `Ocupada por ${findReservationUser(num, 'dia')}` : 'Disponible'}</td>
-                <td>{isGrillReserved(num, 'noche') ? `Ocupada por ${findReservationUser(num, 'noche')}` : 'Disponible'}</td>
+
+        {isLoading ? (
+          <div className="loading-message">Cargando reservas...</div>
+        ) : (
+          <table>
+            <thead>
+              <tr>
+                <th>Parrilla</th>
+                <th>Mañana (12-18hs)</th>
+                <th>Noche (19-24hs)</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {[1, 2, 3, 4, 5].map(num => (
+                <tr key={num}>
+                  <td>{num}</td>
+                  <td>{isGrillReserved(num, 'dia') ? `Ocupada por ${findReservationUser(num, 'dia')}` : 'Disponible'}</td>
+                  <td>{isGrillReserved(num, 'noche') ? `Ocupada por ${findReservationUser(num, 'noche')}` : 'Disponible'}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        )}
       </div>
     </div>
   );
