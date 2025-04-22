@@ -13,23 +13,23 @@ const normalizeDate = (date) => {
 // Obtener reservas por fecha
 // En tu ruta GET /:date
 router.get('/:date', async (req, res) => {
-    try {
-      const date = new Date(req.params.date);
-      date.setHours(0, 0, 0, 0); // Normalizar fecha
-      
-      const reservations = await Reservation.find({ date });
-      
-      // Asegurar formato consistente
-      const formattedReservations = reservations.map(res => ({
-        ...res._doc,
-        date: res.date.toISOString() // Enviar como string ISO
-      }));
-      
-      res.json(formattedReservations);
-    } catch (err) {
-      res.status(500).json({ message: err.message });
-    }
-  });
+  try {
+    const date = new Date(req.params.date);
+    date.setHours(0, 0, 0, 0); // Normalizar fecha
+    
+    const reservations = await Reservation.find({ date });
+
+    // Asegurar formato consistente
+    const formattedReservations = reservations.map(res => ({
+      ...res._doc,
+      date: res.date.toISOString() // Enviar como string ISO
+    }));
+
+    res.json(formattedReservations);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+});
 
 // Crear nueva reserva
 router.post('/', async (req, res) => {

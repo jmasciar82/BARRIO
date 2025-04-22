@@ -115,13 +115,9 @@ const Reservation = () => {
         <tbody>
           {[1, 2, 3, 4, 5].map(num => (
             <tr key={num}>
-              <td>Parrilla {num}</td>
-              <td className={isGrillReserved(num, 'dia') ? 'reserved' : 'available'}>
-                {isGrillReserved(num, 'dia') ? `✖ Ocupada por: ${findReservationUser(num, 'dia')}` : '✔ Disponible'}
-              </td>
-              <td className={isGrillReserved(num, 'noche') ? 'reserved' : 'available'}>
-                {isGrillReserved(num, 'noche') ? `✖ Ocupada por: ${findReservationUser(num, 'noche')}` : '✔ Disponible'}
-              </td>
+              <td>{num}</td>
+              <td>{isGrillReserved(num, 'dia') ? `Ocupada por ${findReservationUser(num, 'dia')}` : 'Disponible'}</td>
+              <td>{isGrillReserved(num, 'noche') ? `Ocupada por ${findReservationUser(num, 'noche')}` : 'Disponible'}</td>
             </tr>
           ))}
         </tbody>
@@ -130,73 +126,48 @@ const Reservation = () => {
   );
 
   return (
-    <div className="reservation-container">
-      <h2>Reserva de Parrillas</h2>
-
-      <form onSubmit={handleSubmit} className="reservation-form">
+    <div className="reservation-form">
+      <h2>Reserva Tu Parrilla</h2>
+      <form onSubmit={handleSubmit}>
         <div className="form-group">
-          <label>Fecha:</label>
+          <label>Fecha</label>
           <DatePicker
             selected={selectedDate}
-            onChange={setSelectedDate}
-            dateFormat="dd/MM/yyyy"
-            minDate={new Date()}
-            locale={es}
-            className="date-picker-input"
+            onChange={date => setSelectedDate(date)}
+            dateFormat="yyyy-MM-dd"
           />
         </div>
 
         <div className="form-group">
-          <label>Turno:</label>
-          <select
-            value={shift}
-            onChange={(e) => setShift(e.target.value)}
-            className="form-select"
-          >
-            <option value="dia">Día (12:00 - 18:00)</option>
-            <option value="noche">Noche (19:00 - 24:00)</option>
+          <label>Turno</label>
+          <select value={shift} onChange={e => setShift(e.target.value)}>
+            <option value="dia">Mañana (12-18hs)</option>
+            <option value="noche">Noche (19-24hs)</option>
           </select>
         </div>
 
         <div className="form-group">
-          <label>Parrilla:</label>
-          <select
-            value={grillNumber}
-            onChange={(e) => setGrillNumber(Number(e.target.value))}
-            className={`form-select ${isGrillReserved(grillNumber, shift) ? 'input-error' : ''}`}
-          >
+          <label>Parrilla</label>
+          <select value={grillNumber} onChange={e => setGrillNumber(parseInt(e.target.value))}>
             {[1, 2, 3, 4, 5].map(num => (
-              <option key={num} value={num} disabled={isGrillReserved(num, shift)}>
-                Parrilla {num} {isGrillReserved(num, shift) ? '(Ocupada)' : '(Disponible)'}
-              </option>
+              <option key={num} value={num}>{`Parrilla ${num}`}</option>
             ))}
           </select>
         </div>
 
         <div className="form-group">
-          <label>Nombre:</label>
+          <label>Nombre</label>
           <input
             type="text"
             value={userName}
-            onChange={(e) => setUserName(e.target.value)}
+            onChange={e => setUserName(e.target.value)}
+            placeholder="Tu nombre"
             required
-            placeholder="Ingrese su nombre completo"
-            className="form-input"
           />
         </div>
 
-        <button
-          type="submit"
-          disabled={isGrillReserved(grillNumber, shift) || isSubmitting}
-          className={`submit-btn ${isGrillReserved(grillNumber, shift) ? 'btn-disabled' : ''}`}
-        >
-          {isSubmitting ? (
-            <>
-              <span className="spinner"></span> Procesando...
-            </>
-          ) : (
-            'Reservar'
-          )}
+        <button type="submit" disabled={isSubmitting}>
+          {isSubmitting ? 'Cargando...' : 'Realizar Reserva'}
         </button>
       </form>
 
