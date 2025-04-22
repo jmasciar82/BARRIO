@@ -5,6 +5,10 @@ import reservationRoutes from './routes/reservations.js';
 import dotenv from 'dotenv';
 import path from 'path';
 
+// Importar __dirname en ES module
+const __dirname = path.resolve();
+
+// Configuración de dotenv
 dotenv.config();
 
 const app = express();
