@@ -26,7 +26,10 @@ const Reservation = () => {
     try {
       const normalizedDate = normalizeDate(date);
       const response = await axios.get(`${backendURL}/reservations/${normalizedDate.toISOString()}`);
-      setReservations(response.data.map(res => ({ ...res, date: new Date(res.date) })));
+      setReservations(response.data.map(res => ({
+        ...res,
+        date: new Date(res.date) // Aseguramos que la fecha sea tipo Date
+      })));
     } catch (err) {
       console.error('Error fetching reservations:', err);
       setMessage({ text: 'Error al obtener reservas', type: 'error' });
@@ -70,16 +73,26 @@ const Reservation = () => {
 
     try {
       const normalizedDate = normalizeDate(selectedDate);
-      const response = await axios.post(`${backendURL}/reservations`, {
+
+      await axios.post(`${backendURL}/reservations`, {
         date: normalizedDate,
         shift,
         grillNumber,
         user: userName
       });
 
+      const newReservation = {
+        date: normalizedDate,
+        shift,
+        grillNumber,
+        user: userName
+      };
+
+      // 🔥 Agrego la nueva reserva directamente al estado
+      setReservations(prev => [...prev, newReservation]);
+
       setMessage({ text: '¡Reserva exitosa!', type: 'success' });
       setUserName('');
-      await fetchReservations(selectedDate);
     } catch (err) {
       const errorMsg = err.response?.data?.message || 'Error al procesar la reserva. Por favor intente nuevamente.';
       setMessage({ text: errorMsg, type: 'error' });
