@@ -24,17 +24,20 @@ const Reservation = () => {
 
   const fetchReservations = useCallback(async (date) => {
     try {
-      const normalizedDate = normalizeDate(date);
-      const response = await axios.get(`${backendURL}/reservations/${normalizedDate.toISOString()}`);
+      const response = await axios.get(`${backendURL}/reservations/${normalizeDate(date).toISOString()}`);
       setReservations(response.data.map(res => ({
         ...res,
-        date: new Date(res.date) // Aseguramos que la fecha sea tipo Date
+        date: new Date(res.date)
       })));
     } catch (err) {
       console.error('Error fetching reservations:', err);
       setMessage({ text: 'Error al obtener reservas', type: 'error' });
     }
   }, []);
+
+  useEffect(() => {
+    fetchReservations(selectedDate);
+  }, [selectedDate, fetchReservations]);
 
   const isGrillReserved = (grillNum, shiftType) => {
     return reservations.some(r => (
@@ -53,10 +56,6 @@ const Reservation = () => {
     return reservation ? reservation.user : '';
   };
 
-  useEffect(() => {
-    fetchReservations(selectedDate);
-  }, [selectedDate, fetchReservations]);
-
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -72,58 +71,29 @@ const Reservation = () => {
     setMessage({ text: '', type: '' });
 
     try {
-      const normalizedDate = normalizeDate(selectedDate);
-
       await axios.post(`${backendURL}/reservations`, {
-        date: normalizedDate,
+        date: normalizeDate(selectedDate),
         shift,
         grillNumber,
         user: userName
       });
 
-      const newReservation = {
-        date: normalizedDate,
+      setReservations(prev => [...prev, {
+        date: normalizeDate(selectedDate),
         shift,
         grillNumber,
         user: userName
-      };
-
-      // 🔥 Agrego la nueva reserva directamente al estado
-      setReservations(prev => [...prev, newReservation]);
+      }]);
 
       setMessage({ text: '¡Reserva exitosa!', type: 'success' });
       setUserName('');
     } catch (err) {
-      const errorMsg = err.response?.data?.message || 'Error al procesar la reserva. Por favor intente nuevamente.';
+      const errorMsg = err.response?.data?.message || 'Error al procesar la reserva. Intenta nuevamente.';
       setMessage({ text: errorMsg, type: 'error' });
     } finally {
       setIsSubmitting(false);
     }
   };
-
-  const renderAvailabilityTable = () => (
-    <div className="availability-table">
-      <h3>Estado de Reservas - {format(selectedDate, 'PPPP', { locale: es })}</h3>
-      <table>
-        <thead>
-          <tr>
-            <th>Parrilla</th>
-            <th>Turno Mañana (12-18hs)</th>
-            <th>Turno Noche (19-24hs)</th>
-          </tr>
-        </thead>
-        <tbody>
-          {[1, 2, 3, 4, 5].map(num => (
-            <tr key={num}>
-              <td>{num}</td>
-              <td>{isGrillReserved(num, 'dia') ? `Ocupada por ${findReservationUser(num, 'dia')}` : 'Disponible'}</td>
-              <td>{isGrillReserved(num, 'noche') ? `Ocupada por ${findReservationUser(num, 'noche')}` : 'Disponible'}</td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-    </div>
-  );
 
   return (
     <div className="reservation-form">
@@ -148,7 +118,7 @@ const Reservation = () => {
 
         <div className="form-group">
           <label>Parrilla</label>
-          <select value={grillNumber} onChange={e => setGrillNumber(parseInt(e.target.value))}>
+          <select value={grillNumber} onChange={e => setGrillNumber(Number(e.target.value))}>
             {[1, 2, 3, 4, 5].map(num => (
               <option key={num} value={num}>{`Parrilla ${num}`}</option>
             ))}
@@ -167,7 +137,7 @@ const Reservation = () => {
         </div>
 
         <button type="submit" disabled={isSubmitting}>
-          {isSubmitting ? 'Cargando...' : 'Realizar Reserva'}
+          {isSubmitting ? 'Reservando...' : 'Reservar'}
         </button>
       </form>
 
@@ -177,7 +147,27 @@ const Reservation = () => {
         </div>
       )}
 
-      {renderAvailabilityTable()}
+      <div className="availability-table">
+        <h3>Estado de Reservas - {format(selectedDate, 'PPPP', { locale: es })}</h3>
+        <table>
+          <thead>
+            <tr>
+              <th>Parrilla</th>
+              <th>Mañana (12-18hs)</th>
+              <th>Noche (19-24hs)</th>
+            </tr>
+          </thead>
+          <tbody>
+            {[1, 2, 3, 4, 5].map(num => (
+              <tr key={num}>
+                <td>{num}</td>
+                <td>{isGrillReserved(num, 'dia') ? `Ocupada por ${findReservationUser(num, 'dia')}` : 'Disponible'}</td>
+                <td>{isGrillReserved(num, 'noche') ? `Ocupada por ${findReservationUser(num, 'noche')}` : 'Disponible'}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
     </div>
   );
 };
