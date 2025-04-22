@@ -16,18 +16,20 @@ const Reservation = () => {
   const [message, setMessage] = useState({ text: '', type: '' });
   const [isSubmitting, setIsSubmitting] = useState(false);
 
+  // Normaliza la fecha a medianoche UTC (00:00:00.000Z)
   const normalizeDate = (date) => {
     const d = new Date(date);
-    d.setHours(0, 0, 0, 0);
+    d.setUTCHours(0, 0, 0, 0);  // Asegura que la fecha sea a medianoche UTC
     return d;
   };
 
+  // Fetch de las reservas desde el backend
   const fetchReservations = useCallback(async (date) => {
     try {
       const response = await axios.get(`${backendURL}/reservations/${normalizeDate(date).toISOString()}`);
       setReservations(response.data.map(res => ({
         ...res,
-        date: new Date(res.date)
+        date: new Date(res.date),
       })));
     } catch (err) {
       console.error('Error fetching reservations:', err);
@@ -39,6 +41,7 @@ const Reservation = () => {
     fetchReservations(selectedDate);
   }, [selectedDate, fetchReservations]);
 
+  // Verifica si una parrilla está reservada para una fecha y turno específicos
   const isGrillReserved = (grillNum, shiftType) => {
     return reservations.some(r => (
       r.grillNumber === grillNum &&
@@ -47,6 +50,7 @@ const Reservation = () => {
     ));
   };
 
+  // Encuentra el nombre del usuario que reservó una parrilla en un turno específico
   const findReservationUser = (grillNum, shiftType) => {
     const reservation = reservations.find(r => (
       r.grillNumber === grillNum &&
@@ -56,13 +60,14 @@ const Reservation = () => {
     return reservation ? reservation.user : '';
   };
 
+  // Maneja el envío del formulario
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     if (isGrillReserved(grillNumber, shift)) {
       setMessage({
         text: `La parrilla ${grillNumber} ya está reservada para el turno ${shift === 'dia' ? 'del día' : 'de la noche'}`,
-        type: 'error'
+        type: 'error',
       });
       return;
     }
@@ -72,17 +77,17 @@ const Reservation = () => {
 
     try {
       await axios.post(`${backendURL}/reservations`, {
-        date: normalizeDate(selectedDate),
+        date: normalizeDate(selectedDate),  // Pasamos la fecha normalizada
         shift,
         grillNumber,
-        user: userName
+        user: userName,
       });
 
       setReservations(prev => [...prev, {
         date: normalizeDate(selectedDate),
         shift,
         grillNumber,
-        user: userName
+        user: userName,
       }]);
 
       setMessage({ text: '¡Reserva exitosa!', type: 'success' });
@@ -105,6 +110,7 @@ const Reservation = () => {
             selected={selectedDate}
             onChange={date => setSelectedDate(date)}
             dateFormat="yyyy-MM-dd"
+            locale={es}
           />
         </div>
 
