@@ -60,7 +60,7 @@ const Welcome = () => {
         // Timeout de respaldo por si acaso (50 segundos)
         timeout = setTimeout(() => {
           setIsLoading(false);
-        }, 25000);
+        }, 5000);
       }
     });
 
