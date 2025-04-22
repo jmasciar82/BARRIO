@@ -47,26 +47,17 @@ const Reservation = () => {
   }, [selectedDate]);
 
   // Verificar disponibilidad mejorada
-  if (isGrillReserved(grillNumber, shift)) {
-    // Actualizar reservas para reflejar cambios recientes
-    try {
-      const normalizedDate = normalizeDate(selectedDate);
-      const updatedResponse = await axios.get(`${backendURL}/reservations/${normalizedDate.toISOString()}`);
-      setReservations(updatedResponse.data.map(res => ({
-        ...res,
-        date: new Date(res.date)
-      })));
-    } catch (fetchError) {
-      console.error('Error actualizando reservas:', fetchError);
-    }
-    
-    setMessage({ 
-      text: `La parrilla ${grillNumber} ya está reservada para el turno ${shift === 'dia' ? 'del día' : 'de la noche'}`,
-      type: 'error'
+  const isGrillReserved = (grillNum, shiftType) => {
+    return reservations.some(r => {
+      const reservationDate = normalizeDate(r.date);
+      const currentDate = normalizeDate(selectedDate);
+      return (
+        r.grillNumber === grillNum && 
+        r.shift === shiftType &&
+        reservationDate.getTime() === currentDate.getTime()
+      );
     });
-    return;
-  }
-  
+  };
 
   // Manejar reserva con validación reforzada
   const handleSubmit = async (e) => {
