@@ -159,7 +159,11 @@ const Reservation = () => {
         <h3>Estado de Reservas - {format(selectedDate, 'PPPP', { locale: es })}</h3>
 
         {isLoading ? (
-          <div className="loading-message">Cargando reservas...</div>
+          
+          <><div className="loading-message">Cargando reservas... </div><div class="spinner"></div></>
+
+          
+          
         ) : (
           <table>
             <thead>
