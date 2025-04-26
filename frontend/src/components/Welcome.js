@@ -29,71 +29,65 @@ const Welcome = () => {
     
     // ... (otros mensajes igual que antes)
   ];
+  // Función para obtener un mensaje aleatorio
+  const getRandomMessage = () => {
+    const randomIndex = Math.floor(Math.random() * motivationalMessages.length);
+    return motivationalMessages[randomIndex];
+  };
 
-  // Función para verificar si el servidor está listo
   const checkServerStatus = async () => {
     try {
-      // Aquí puedes hacer una petición a tu API para verificar si está lista
-      const response = await fetch('/api/health-check');
-      if (response.ok) {
+      // Simulamos una verificación de servidor
+      // En producción, reemplaza con tu llamada real a la API
+      const isReady = Math.random() > 0.8; // 20% de probabilidad de estar listo
+      if (isReady) {
         setServerReady(true);
         setIsLoading(false);
-        return true;
       }
+      return isReady;
     } catch (error) {
+      console.error("Error checking server status:", error);
       return false;
     }
-    return false;
   };
 
   useEffect(() => {
+    // Establece un mensaje inicial inmediatamente
+    setMotivationalMessage(getRandomMessage());
+    
     let messageInterval;
     let statusCheckInterval;
-    let timeout;
 
-    // Verificar inmediatamente si el servidor está listo
-    checkServerStatus().then((isReady) => {
+    const initializeLoading = async () => {
+      const isReady = await checkServerStatus();
+      
       if (!isReady) {
-        // Si no está listo, configuramos los intervalos de mensajes
         messageInterval = setInterval(() => {
-          const randomIndex = Math.floor(Math.random() * motivationalMessages.length);
-          setMotivationalMessage(motivationalMessages[randomIndex]);
-        }, 5000);
+          setMotivationalMessage(getRandomMessage());
+        }, 3000);
 
-        // Verificar el estado del servidor cada 5 segundos
         statusCheckInterval = setInterval(() => {
           checkServerStatus();
         }, 5000);
-
-        // Timeout de respaldo por si acaso (50 segundos)
-        timeout = setTimeout(() => {
-          setIsLoading(false);
-        }, 5000);
       }
-    });
+    };
 
-    // Si el servidor está listo rápidamente, cancelamos los intervalos y la lógica de espera
-    if (serverReady) {
-      clearInterval(messageInterval);
-      clearInterval(statusCheckInterval);
-      clearTimeout(timeout);
-    }
+    initializeLoading();
 
     return () => {
       clearInterval(messageInterval);
       clearInterval(statusCheckInterval);
-      clearTimeout(timeout);
     };
-  }, [serverReady]);
+  }, []);
 
-  if (isLoading && !serverReady) {
+  if (isLoading) {
     return (
-      <div className="welcome-container loading">
+      <div className="welcome-container">
         <h1>Barrio Tiro Federal</h1>
-        <div class="spinner"></div>
-        <div className="loading-spinner"></div>
-        <p className="motivational-message">{motivationalMessage}</p>
-        <p className="loading-text">Cargando, por favor espera...</p>
+        <div className="spinner-container">
+          <div className="spinner"></div>
+          <p className="loading-message">{motivationalMessage}</p>
+        </div>
       </div>
     );
   }
