@@ -29,7 +29,7 @@ const Reservation = () => {
     try {
       setIsLoading(true); // Activamos loading
       const response = await axios.get(`${backendURL}/reservations/${normalizeDate(date).toISOString()}`);
-      await new Promise(resolve => setTimeout(resolve, 5000)); // Delay artificial de 5 segundos
+      await new Promise(resolve => setTimeout(resolve, 2000)); // Delay artificial de 5 segundos
       setReservations(response.data.map(res => ({
         ...res,
         date: new Date(res.date),

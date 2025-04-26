@@ -19,6 +19,14 @@ const Welcome = () => {
     "El éxito es la suma de pequeños esfuerzos repetidos día tras día...",
     "Tu actitud positiva es tu mayor superpoder...",
     "Cada momento de espera acerca a un momento de disfrute...",
+    "El emprendedor descubre oportunidades donde otros no las ven",
+    "El futuro es incierto, pero la adaptación es clave",
+    "La acción humana es conducta con propósito",
+    'El conocimiento está disperso en la sociedad',
+    'Cada individuo es único en sus preferencias y conocimientos',
+    'La cooperación social voluntaria crea prosperidad',
+    'La competencia es un proceso de descubrimiento',
+    
     // ... (otros mensajes igual que antes)
   ];
 
@@ -60,7 +68,7 @@ const Welcome = () => {
         // Timeout de respaldo por si acaso (50 segundos)
         timeout = setTimeout(() => {
           setIsLoading(false);
-        }, 15000);
+        }, 5000);
       }
     });
 
@@ -82,6 +90,7 @@ const Welcome = () => {
     return (
       <div className="welcome-container loading">
         <h1>Barrio Tiro Federal</h1>
+        <div class="spinner"></div>
         <div className="loading-spinner"></div>
         <p className="motivational-message">{motivationalMessage}</p>
         <p className="loading-text">Cargando, por favor espera...</p>
