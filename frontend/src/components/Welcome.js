@@ -39,7 +39,7 @@ const Welcome = () => {
     try {
       // Simulamos una verificación de servidor
       // En producción, reemplaza con tu llamada real a la API
-      const isReady = Math.random() > 0.8; // 20% de probabilidad de estar listo
+      const isReady = Math.random() > 0.5; // 20% de probabilidad de estar listo
       if (isReady) {
         setServerReady(true);
         setIsLoading(false);
