@@ -1,6 +1,6 @@
 import React from 'react';
-import { HashRouter as Router, Routes, Route } from 'react-router-dom';
-import Welcome from './components/Welcome';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import Welcome from './components/Welcome';  // Nota el ./ al inicio
 import Reservation from './components/Reservation.js';
 
 function App() {
@@ -9,7 +9,6 @@ function App() {
       <Routes>
         <Route path="/" element={<Welcome />} />
         <Route path="/reservas" element={<Reservation />} />
-        {/* Puedes añadir más rutas aquí */}
       </Routes>
     </Router>
   );
