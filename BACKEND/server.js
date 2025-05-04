@@ -24,16 +24,16 @@ app.use(express.json());
 // Rutas de la API
 app.use('/api/reservations', reservationRoutes);
 
-// Servir archivos estáticos si estamos en producción
+// Si estamos en producción, servir los archivos estáticos de React
 if (process.env.NODE_ENV === 'production') {
+  // Servir archivos estáticos del build de React
   app.use(express.static(path.join(__dirname, 'client', 'build')));
+
+  // Cualquier ruta que no sea de la API, devolver el index.html de React
+  app.get('*', (req, res) => {
+    res.sendFile(path.resolve(__dirname, 'client', 'build', 'index.html'));
+  });
 }
-
-// Cualquier otra ruta (que no sea API), devolvé index.html
-app.get('*', (req, res) => {
-  res.sendFile(path.resolve(__dirname, 'client', 'build', 'index.html'));
-});
-
 
 // Error handling global
 app.use((err, req, res, next) => {
