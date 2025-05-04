@@ -109,6 +109,7 @@ const Reservation = () => {
         <div className="form-group">
           <label>Fecha</label>
           <DatePicker
+          className='fecha'
             selected={selectedDate}
             onChange={date => setSelectedDate(date)}
             dateFormat="yyyy-MM-dd"
