@@ -120,8 +120,8 @@ const Reservation = () => {
         <div className="form-group">
           <label>Turno</label>
           <select value={shift} onChange={e => setShift(e.target.value)}>
-            <option value="dia">Mañana (12-18hs)</option>
-            <option value="noche">Noche (19-24hs)</option>
+            <option value="dia">Mañana</option>
+            <option value="noche">Noche</option>
           </select>
         </div>
 
