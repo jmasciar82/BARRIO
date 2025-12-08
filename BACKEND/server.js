@@ -4,6 +4,7 @@ import cors from 'cors';
 import reservationRoutes from './routes/reservations.js';
 import dotenv from 'dotenv';
 import path from 'path';
+import footballReservationsRoutes from './routes/footballReservations.js';
 
 // Importar __dirname en ES module
 const __dirname = path.resolve();
@@ -23,6 +24,7 @@ app.use(express.json());
 
 // Rutas de la API
 app.use('/api/reservations', reservationRoutes);
+app.use('/api/football-reservations', footballReservationsRoutes);
 
 // Si se define SERVE_FRONTEND, servir archivos estáticos
 if (process.env.SERVE_FRONTEND === 'true') {

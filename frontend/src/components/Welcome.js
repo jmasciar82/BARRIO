@@ -99,6 +99,13 @@ const Welcome = () => {
       <Link to="/reservas" className="reservation-link">
         Reservar Parrilla
       </Link>
+      <hr></hr>
+      <Link to="/futbol" className="reservation-link">
+        PROXIMAMENTE NUEVA SECCION
+      </Link>
+      
+      
+     
     </div>
   );
 };

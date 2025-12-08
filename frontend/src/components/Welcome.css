@@ -136,5 +136,6 @@
     .reservation-link {
       padding: 10px 25px;
       font-size: 1rem;
+      gap: 30px;
     }
   }
