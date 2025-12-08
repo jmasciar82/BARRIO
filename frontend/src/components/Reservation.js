@@ -15,30 +15,32 @@ const Reservation = () => {
   const [reservations, setReservations] = useState([]);
   const [message, setMessage] = useState({ text: '', type: '' });
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [isLoading, setIsLoading] = useState(true); // nuevo estado
+  const [isLoading, setIsLoading] = useState(true);
 
-  // Normaliza la fecha a medianoche UTC (00:00:00.000Z)
-  const normalizeDate = (date) => {
-    const d = new Date(date);
-    d.setUTCHours(0, 0, 0, 0);
-    return d;
+  // Convierte Date → "YYYY-MM-DD"
+  const toDateString = (date) => {
+    return date.toISOString().slice(0, 10);
   };
 
-  // Fetch de las reservas desde el backend
+  // Obtener reservas desde backend
   const fetchReservations = useCallback(async (date) => {
     try {
-      setIsLoading(true); // Activamos loading
-      const response = await axios.get(`${backendURL}/reservations/${normalizeDate(date).toISOString()}`);
-      await new Promise(resolve => setTimeout(resolve, 2000)); // Delay artificial de 5 segundos
-      setReservations(response.data.map(res => ({
-        ...res,
-        date: new Date(res.date),
-      })));
+      setIsLoading(true);
+
+      const dateString = toDateString(date);
+
+      const response = await axios.get(`${backendURL}/reservations/${dateString}`);
+
+      // Delay artificial (opcional)
+      await new Promise(resolve => setTimeout(resolve, 1000));
+
+      // Backend ya entrega date como string, no convertir
+      setReservations(response.data);
     } catch (err) {
       console.error('Error fetching reservations:', err);
       setMessage({ text: 'Error al obtener reservas', type: 'error' });
     } finally {
-      setIsLoading(false); // Finalizamos loading
+      setIsLoading(false);
     }
   }, []);
 
@@ -46,25 +48,34 @@ const Reservation = () => {
     fetchReservations(selectedDate);
   }, [selectedDate, fetchReservations]);
 
+  // Ver si está ocupada
   const isGrillReserved = (grillNum, shiftType) => {
-    return reservations.some(r => (
+    const dateString = toDateString(selectedDate);
+
+    return reservations.some(r =>
       r.grillNumber === grillNum &&
       r.shift === shiftType &&
-      normalizeDate(r.date).getTime() === normalizeDate(selectedDate).getTime()
-    ));
+      r.date === dateString
+    );
   };
 
   const findReservationUser = (grillNum, shiftType) => {
-    const reservation = reservations.find(r => (
+    const dateString = toDateString(selectedDate);
+
+    const res = reservations.find(r =>
       r.grillNumber === grillNum &&
       r.shift === shiftType &&
-      normalizeDate(r.date).getTime() === normalizeDate(selectedDate).getTime()
-    ));
-    return reservation ? reservation.user : '';
+      r.date === dateString
+    );
+
+    return res ? res.user : '';
   };
 
+  // Enviar reserva al backend
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    const dateString = toDateString(selectedDate);
 
     if (isGrillReserved(grillNumber, shift)) {
       setMessage({
@@ -79,18 +90,22 @@ const Reservation = () => {
 
     try {
       await axios.post(`${backendURL}/reservations`, {
-        date: normalizeDate(selectedDate),
+        date: dateString,   // <--- ENVIAMOS "YYYY-MM-DD"
         shift,
         grillNumber,
         user: userName,
       });
 
-      setReservations(prev => [...prev, {
-        date: normalizeDate(selectedDate),
-        shift,
-        grillNumber,
-        user: userName,
-      }]);
+      // Agregar localmente
+      setReservations(prev => [
+        ...prev,
+        {
+          date: dateString,
+          shift,
+          grillNumber,
+          user: userName,
+        }
+      ]);
 
       setMessage({ text: '¡Reserva exitosa!', type: 'success' });
       setUserName('');
@@ -106,10 +121,11 @@ const Reservation = () => {
     <div className="reservation-form">
       <h2>Reserva Tu Parrilla</h2>
       <form onSubmit={handleSubmit}>
+
         <div className="form-group">
           <label>Fecha</label>
           <DatePicker
-          className='fecha'
+            className="fecha"
             selected={selectedDate}
             onChange={date => setSelectedDate(date)}
             dateFormat="yyyy-MM-dd"
@@ -160,11 +176,10 @@ const Reservation = () => {
         <h3>Estado de Reservas - {format(selectedDate, 'PPPP', { locale: es })}</h3>
 
         {isLoading ? (
-          
-          <><div className="loading-message">Cargando reservas... </div><div class="spinner"></div></>
-
-          
-          
+          <>
+            <div className="loading-message">Cargando reservas...</div>
+            <div className="spinner"></div>
+          </>
         ) : (
           <table>
             <thead>
