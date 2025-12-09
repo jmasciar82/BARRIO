@@ -1,4 +1,4 @@
-/* Welcome.css */
+/* Welcome.css 
 .welcome-container {
     display: flex;
     flex-direction: column;
@@ -87,8 +87,8 @@
       opacity: 0;
     }
   }
-  
-  /* Animaciones */
+  */
+  /* Animaciones 
   @keyframes fadeIn {
     from { opacity: 0; }
     to { opacity: 1; }
@@ -105,7 +105,9 @@
     }
   }
   
-  /* Efecto de fondo dinámico */
+
+  */
+  /* Efecto de fondo dinámico 
   .welcome-container::before {
     content: '';
     position: absolute;
@@ -118,7 +120,9 @@
     z-index: -1;
   }
   
-  /* Responsive design */
+
+  */
+  /* Responsive design 
   @media (max-width: 768px) {
     .welcome-container {
       padding: 1rem;
@@ -139,3 +143,151 @@
       gap: 30px;
     }
   }
+
+
+  */
+
+  /* 🎄 Fondo general navideño */
+.welcome-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  background: linear-gradient(135deg, #b30000 0%, #003300 100%);
+  text-align: center;
+  padding: 2rem;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  position: relative;
+  overflow: hidden;
+}
+
+/* ❄ Copos de nieve */
+.snowflake {
+  position: fixed;
+  top: -10px;
+  color: #ffffff;
+  font-size: 20px;
+  opacity: 0.9;
+  pointer-events: none;
+  animation: snowfall 10s linear infinite;
+  z-index: 9999;
+}
+
+@keyframes snowfall {
+  0% { transform: translateY(0) rotate(0deg); }
+  100% { transform: translateY(110vh) rotate(360deg); }
+}
+
+/* 🎅 Encabezado con luces */
+.welcome-container h1 {
+  font-size: 2.8rem;
+  color: #fff8dc;
+  margin-bottom: 1.5rem;
+  text-shadow: 0 0 10px gold, 0 0 20px #ff0000;
+  animation: fadeIn 1s ease-in-out;
+  border-bottom: 3px solid rgba(255, 215, 0, 0.4);
+  padding-bottom: 10px;
+}
+
+/* Texto navideño */
+.welcome-container p {
+  font-size: 1.3rem;
+  color: #ffffffd9;
+  margin-bottom: 2.5rem;
+  max-width: 600px;
+  line-height: 1.6;
+  animation: fadeIn 1.5s ease-in-out;
+}
+
+/* 🎁 Botones estilo REGALO */
+.reservation-link {
+  display: inline-block;
+  padding: 12px 30px;
+  background: linear-gradient(135deg, #ff0000, #b30000);
+  color: white;
+  text-decoration: none;
+  border-radius: 50px;
+  font-weight: 700;
+  font-size: 1.1rem;
+  transition: all 0.3s ease;
+  border: 2px solid gold;
+  box-shadow: 0 0 10px rgba(255,0,0,0.6), 0 0 10px gold inset;
+  animation: fadeInUp 1s ease-in-out;
+}
+
+.reservation-link:hover {
+  background: linear-gradient(135deg, #ff3333, #cc0000);
+  transform: translateY(-3px);
+  box-shadow: 0 0 15px gold, 0 0 15px red inset;
+}
+
+/* Spinner adaptado */
+.spinner::after,
+.spinner::before {
+  border-color: gold;
+}
+
+/* Copos de nieve generados */
+@keyframes pulse {
+  0% { transform: scale(0); opacity: 1; }
+  100% { transform: scale(1.3); opacity: 0; }
+}
+
+/* Fade in */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+/* Fade Up */
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* RESPONSIVE */
+@media (max-width: 768px) {
+  .welcome-container h1 {
+    font-size: 2.2rem;
+  }
+  .welcome-container p {
+    font-size: 1.1rem;
+  }
+  .reservation-link {
+    padding: 10px 25px;
+    font-size: 1rem;
+  }
+}
+
+  
+/* ❄️ Copos de nieve constantes */
+.snow-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  overflow: hidden;
+  z-index: 5;
+}
+
+.snowflake {
+  position: absolute;
+  top: -10px;
+  color: white;
+  font-size: 1.2rem;
+  opacity: 0.8;
+  animation: fall linear infinite;
+}
+
+/* Animación de caída */
+@keyframes fall {
+  0% {
+    transform: translateY(-10vh) rotate(0deg);
+  }
+  100% {
+    transform: translateY(110vh) rotate(360deg);
+  }
+}

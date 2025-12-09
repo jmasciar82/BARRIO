@@ -26,10 +26,8 @@ const Welcome = () => {
     'Cada individuo es único en sus preferencias y conocimientos',
     'La cooperación social voluntaria crea prosperidad',
     'La competencia es un proceso de descubrimiento',
-    
-    // ... (otros mensajes igual que antes)
   ];
-  // Función para obtener un mensaje aleatorio
+
   const getRandomMessage = () => {
     const randomIndex = Math.floor(Math.random() * motivationalMessages.length);
     return motivationalMessages[randomIndex];
@@ -37,9 +35,7 @@ const Welcome = () => {
 
   const checkServerStatus = async () => {
     try {
-      // Simulamos una verificación de servidor
-      // En producción, reemplaza con tu llamada real a la API
-      const isReady = Math.random() > 0.5; // 20% de probabilidad de estar listo
+      const isReady = Math.random() > 0.5;
       if (isReady) {
         setServerReady(true);
         setIsLoading(false);
@@ -52,7 +48,6 @@ const Welcome = () => {
   };
 
   useEffect(() => {
-    // Establece un mensaje inicial inmediatamente
     setMotivationalMessage(getRandomMessage());
     
     let messageInterval;
@@ -80,9 +75,31 @@ const Welcome = () => {
     };
   }, []);
 
+  // ❄️ Sistema de nieve INFINITA (sin remover copos)
+  const SNOW = Array.from({ length: 40 });
+
   if (isLoading) {
     return (
       <div className="welcome-container">
+
+        {/* Copos de nieve infinitos */}
+        <div className="snow-container">
+          {SNOW.map((_, i) => (
+            <div
+              key={i}
+              className="snowflake"
+              style={{
+                left: `${Math.random() * 100}%`,
+                animationDuration: `${6 + Math.random() * 8}s`,
+                animationDelay: `${Math.random() * 10}s`,
+                fontSize: `${10 + Math.random() * 20}px`
+              }}
+            >
+              ❄
+            </div>
+          ))}
+        </div>
+
         <h1>Barrio Tiro Federal</h1>
         <div className="spinner-container">
           <div className="spinner"></div>
@@ -94,18 +111,37 @@ const Welcome = () => {
 
   return (
     <div className="welcome-container">
+
+      {/* Copos de nieve infinitos también en pantalla principal */}
+      <div className="snow-container">
+        {SNOW.map((_, i) => (
+          <div
+            key={i}
+            className="snowflake"
+            style={{
+              left: `${Math.random() * 100}%`,
+              animationDuration: `${6 + Math.random() * 8}s`,
+              animationDelay: `${Math.random() * 10}s`,
+              fontSize: `${10 + Math.random() * 20}px`
+            }}
+          >
+            ❄
+          </div>
+        ))}
+      </div>
+
       <h1>Bienvenido al Barrio Tiro Federal</h1>
       <p>¡Gracias por visitar nuestro sitio web!</p>
+
       <Link to="/reservas" className="reservation-link">
         Reservar Parrilla
       </Link>
-      <hr></hr>
+
+      <hr/>
+
       <Link to="/futbol" className="reservation-link">
         PROXIMAMENTE NUEVA SECCION
       </Link>
-      
-      
-     
     </div>
   );
 };
