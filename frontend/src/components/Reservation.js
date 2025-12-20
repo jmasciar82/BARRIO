@@ -17,9 +17,12 @@ const Reservation = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
 
-  // Convierte Date → "YYYY-MM-DD"
+  // ✅ FECHA LOCAL — SIN UTC — SIN ISO
   const toDateString = (date) => {
-    return date.toISOString().slice(0, 10);
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
   };
 
   // Obtener reservas desde backend
@@ -28,13 +31,8 @@ const Reservation = () => {
       setIsLoading(true);
 
       const dateString = toDateString(date);
-
       const response = await axios.get(`${backendURL}/reservations/${dateString}`);
 
-      // Delay artificial (opcional)
-      await new Promise(resolve => setTimeout(resolve, 1000));
-
-      // Backend ya entrega date como string, no convertir
       setReservations(response.data);
     } catch (err) {
       console.error('Error fetching reservations:', err);
@@ -48,7 +46,7 @@ const Reservation = () => {
     fetchReservations(selectedDate);
   }, [selectedDate, fetchReservations]);
 
-  // Ver si está ocupada
+  // Ver si una parrilla está reservada
   const isGrillReserved = (grillNum, shiftType) => {
     const dateString = toDateString(selectedDate);
 
@@ -71,7 +69,7 @@ const Reservation = () => {
     return res ? res.user : '';
   };
 
-  // Enviar reserva al backend
+  // Crear reserva
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -79,7 +77,9 @@ const Reservation = () => {
 
     if (isGrillReserved(grillNumber, shift)) {
       setMessage({
-        text: `La parrilla ${grillNumber} ya está reservada para el turno ${shift === 'dia' ? 'del día' : 'de la noche'}`,
+        text: `La parrilla ${grillNumber} ya está reservada para el turno ${
+          shift === 'dia' ? 'del día' : 'de la noche'
+        }`,
         type: 'error',
       });
       return;
@@ -90,27 +90,22 @@ const Reservation = () => {
 
     try {
       await axios.post(`${backendURL}/reservations`, {
-        date: dateString,   // <--- ENVIAMOS "YYYY-MM-DD"
+        date: dateString,
         shift,
         grillNumber,
         user: userName,
       });
 
-      // Agregar localmente
       setReservations(prev => [
         ...prev,
-        {
-          date: dateString,
-          shift,
-          grillNumber,
-          user: userName,
-        }
+        { date: dateString, shift, grillNumber, user: userName }
       ]);
 
       setMessage({ text: '¡Reserva exitosa!', type: 'success' });
       setUserName('');
     } catch (err) {
-      const errorMsg = err.response?.data?.message || 'Error al procesar la reserva. Intenta nuevamente.';
+      const errorMsg =
+        err.response?.data?.message || 'Error al procesar la reserva. Intenta nuevamente.';
       setMessage({ text: errorMsg, type: 'error' });
     } finally {
       setIsSubmitting(false);
@@ -120,8 +115,8 @@ const Reservation = () => {
   return (
     <div className="reservation-form">
       <h2>Reserva Tu Parrilla</h2>
-      <form onSubmit={handleSubmit}>
 
+      <form onSubmit={handleSubmit}>
         <div className="form-group">
           <label>Fecha</label>
           <DatePicker
@@ -143,7 +138,10 @@ const Reservation = () => {
 
         <div className="form-group">
           <label>Parrilla</label>
-          <select value={grillNumber} onChange={e => setGrillNumber(Number(e.target.value))}>
+          <select
+            value={grillNumber}
+            onChange={e => setGrillNumber(Number(e.target.value))}
+          >
             {[1, 2, 3, 4, 5].map(num => (
               <option key={num} value={num}>{`Parrilla ${num}`}</option>
             ))}
@@ -173,7 +171,9 @@ const Reservation = () => {
       )}
 
       <div className="availability-table">
-        <h3>Estado de Reservas - {format(selectedDate, 'PPPP', { locale: es })}</h3>
+        <h3>
+          Estado de Reservas – {format(selectedDate, 'PPPP', { locale: es })}
+        </h3>
 
         {isLoading ? (
           <>
@@ -193,8 +193,16 @@ const Reservation = () => {
               {[1, 2, 3, 4, 5].map(num => (
                 <tr key={num}>
                   <td>{num}</td>
-                  <td>{isGrillReserved(num, 'dia') ? `Ocupada por ${findReservationUser(num, 'dia')}` : 'Disponible'}</td>
-                  <td>{isGrillReserved(num, 'noche') ? `Ocupada por ${findReservationUser(num, 'noche')}` : 'Disponible'}</td>
+                  <td>
+                    {isGrillReserved(num, 'dia')
+                      ? `Ocupada por ${findReservationUser(num, 'dia')}`
+                      : 'Disponible'}
+                  </td>
+                  <td>
+                    {isGrillReserved(num, 'noche')
+                      ? `Ocupada por ${findReservationUser(num, 'noche')}`
+                      : 'Disponible'}
+                  </td>
                 </tr>
               ))}
             </tbody>
