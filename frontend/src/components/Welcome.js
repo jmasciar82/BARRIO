@@ -12,20 +12,8 @@ const Welcome = () => {
     "Grandes cosas empiezan con pequeños momentos como este...",
     "Tu tiempo es valioso, gracias por esperar...",
     "Mientras cargamos, recuerda: hoy es un gran día...",
-    "La paciencia es la madre de todas las virtudes...",
-    "Buenas cosas vienen para aquellos que esperan...",
-    "Estamos trabajando para darte lo mejor...",
     "Preparando la parrilla para tus mejores momentos...",
-    "El éxito es la suma de pequeños esfuerzos repetidos día tras día...",
-    "Tu actitud positiva es tu mayor superpoder...",
-    "Cada momento de espera acerca a un momento de disfrute...",
-    "El emprendedor descubre oportunidades donde otros no las ven",
-    "El futuro es incierto, pero la adaptación es clave",
-    "La acción humana es conducta con propósito",
-    'El conocimiento está disperso en la sociedad',
-    'Cada individuo es único en sus preferencias y conocimientos',
-    'La cooperación social voluntaria crea prosperidad',
-    'La competencia es un proceso de descubrimiento',
+    "Cada momento de espera acerca a un momento de disfrute..."
   ];
 
   const getRandomMessage = () => {
@@ -49,13 +37,13 @@ const Welcome = () => {
 
   useEffect(() => {
     setMotivationalMessage(getRandomMessage());
-    
+
     let messageInterval;
     let statusCheckInterval;
 
     const initializeLoading = async () => {
       const isReady = await checkServerStatus();
-      
+
       if (!isReady) {
         messageInterval = setInterval(() => {
           setMotivationalMessage(getRandomMessage());
@@ -75,31 +63,9 @@ const Welcome = () => {
     };
   }, []);
 
-  // ❄️ Sistema de nieve INFINITA (sin remover copos)
-  const SNOW = Array.from({ length: 40 });
-
   if (isLoading) {
     return (
       <div className="welcome-container">
-
-        {/* Copos de nieve infinitos */}
-        <div className="snow-container">
-          {SNOW.map((_, i) => (
-            <div
-              key={i}
-              className="snowflake"
-              style={{
-                left: `${Math.random() * 100}%`,
-                animationDuration: `${6 + Math.random() * 8}s`,
-                animationDelay: `${Math.random() * 10}s`,
-                fontSize: `${10 + Math.random() * 20}px`
-              }}
-            >
-              ❄
-            </div>
-          ))}
-        </div>
-
         <h1>Barrio Tiro Federal</h1>
         <div className="spinner-container">
           <div className="spinner"></div>
@@ -111,25 +77,6 @@ const Welcome = () => {
 
   return (
     <div className="welcome-container">
-
-      {/* Copos de nieve infinitos también en pantalla principal */}
-      <div className="snow-container">
-        {SNOW.map((_, i) => (
-          <div
-            key={i}
-            className="snowflake"
-            style={{
-              left: `${Math.random() * 100}%`,
-              animationDuration: `${6 + Math.random() * 8}s`,
-              animationDelay: `${Math.random() * 10}s`,
-              fontSize: `${10 + Math.random() * 20}px`
-            }}
-          >
-            ❄
-          </div>
-        ))}
-      </div>
-
       <h1>Bienvenido al Barrio Tiro Federal</h1>
       <p>¡Gracias por visitar nuestro sitio web!</p>
 
@@ -137,7 +84,7 @@ const Welcome = () => {
         Reservar Parrilla
       </Link>
 
-      <hr/>
+      <hr />
 
       <Link to="/futbol" className="reservation-link">
         PROXIMAMENTE NUEVA SECCION
