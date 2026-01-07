@@ -1,4 +1,4 @@
-/* 🌞 ESTILO VERANO - Welcome */
+/* 🌴 ESTILO VERANO – BARRIO TIRO FEDERAL */
 
 .welcome-container {
   display: flex;
@@ -6,117 +6,101 @@
   align-items: center;
   justify-content: center;
   min-height: 100vh;
-  background: linear-gradient(135deg, #00c6ff 0%, #0072ff 100%);
+  background: linear-gradient(
+      rgba(0, 0, 0, 0.25),
+      rgba(0, 0, 0, 0.25)
+    ),
+    url("https://images.unsplash.com/photo-1507525428034-b723cf961d3e")
+      center / cover no-repeat;
   text-align: center;
   padding: 2rem;
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  position: relative;
-  overflow: hidden;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  color: white;
 }
 
-/* ☀️ Overlay suave tipo sol */
-.welcome-container::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background: radial-gradient(circle at top, rgba(255,255,255,0.25), transparent 60%);
-  z-index: 0;
-}
-
-/* CONTENIDO SOBRE EL FONDO */
-.welcome-container > * {
-  position: relative;
-  z-index: 1;
-}
-
-/* 🌴 TÍTULO */
+/* 🌊 TÍTULO */
 .welcome-container h1 {
-  font-size: 2.8rem;
-  color: #ffffff;
+  font-size: 3rem;
   margin-bottom: 1.5rem;
-  text-shadow: 0 4px 10px rgba(0, 0, 0, 0.25);
-  animation: fadeIn 1s ease-in-out;
+  text-shadow: 0 4px 10px rgba(0, 0, 0, 0.6);
+  animation: fadeInDown 1s ease;
 }
 
-/* 🏖 TEXTO */
+/* 🌞 TEXTO */
 .welcome-container p {
   font-size: 1.3rem;
-  color: #f0faff;
   margin-bottom: 2.5rem;
-  max-width: 620px;
+  max-width: 600px;
   line-height: 1.6;
-  animation: fadeIn 1.5s ease-in-out;
+  text-shadow: 0 2px 6px rgba(0, 0, 0, 0.6);
+  animation: fadeIn 1.4s ease;
 }
 
-/* 🔥 BOTONES VERANO */
+/* 🍹 BOTONES */
 .reservation-link {
   display: inline-block;
-  padding: 14px 34px;
-  background: linear-gradient(135deg, #ff9800, #ff5722);
+  padding: 14px 36px;
+  margin: 10px 0;
+  background: linear-gradient(135deg, #ffb347, #ff7a18);
   color: #fff;
   text-decoration: none;
-  border-radius: 999px;
+  border-radius: 50px;
   font-weight: 700;
   font-size: 1.15rem;
-  margin: 10px 0;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.35);
   transition: all 0.3s ease;
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25);
-  animation: fadeInUp 1s ease-in-out;
 }
 
 .reservation-link:hover {
-  transform: translateY(-3px);
-  background: linear-gradient(135deg, #ffa726, #ff7043);
-  box-shadow: 0 12px 26px rgba(0, 0, 0, 0.3);
+  transform: translateY(-4px);
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.45);
+  background: linear-gradient(135deg, #ffc371, #ff9a44);
 }
 
-.reservation-link:active {
-  transform: translateY(0);
+/* ⏳ LOADING */
+.spinner-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
-/* ⏳ SPINNER VERANO */
+.loading-message {
+  color: #fff !important; 
+  margin-top: 1rem;
+  font-size: 1.2rem;
+  animation: fadeIn 1.2s ease;
+}
+
+/* 🔄 SPINNER */
 .spinner {
   width: 50px;
   height: 50px;
-  position: relative;
-}
-
-.spinner::before,
-.spinner::after {
-  content: "";
-  box-sizing: border-box;
-  position: absolute;
-  inset: 0;
+  border: 4px solid rgba(255, 255, 255, 0.3);
+  border-top: 4px solid #ffd369;
   border-radius: 50%;
-  border: 3px solid rgba(255, 255, 255, 0.6);
-  animation: pulse 1.8s linear infinite;
+  animation: spin 1s linear infinite;
 }
 
-.spinner::after {
-  animation-delay: 0.9s;
-}
-
-/* ANIMACIONES */
-@keyframes pulse {
-  0% {
-    transform: scale(0.2);
-    opacity: 1;
-  }
-  100% {
-    transform: scale(1.4);
-    opacity: 0;
+/* ✨ ANIMACIONES */
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
   }
 }
 
 @keyframes fadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
-}
-
-@keyframes fadeInUp {
   from {
     opacity: 0;
-    transform: translateY(25px);
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes fadeInDown {
+  from {
+    opacity: 0;
+    transform: translateY(-25px);
   }
   to {
     opacity: 1;
@@ -132,11 +116,10 @@
 
   .welcome-container p {
     font-size: 1.1rem;
-    padding: 0 1rem;
   }
 
   .reservation-link {
-    padding: 12px 26px;
+    padding: 12px 28px;
     font-size: 1rem;
   }
 }
