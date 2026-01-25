@@ -6,6 +6,12 @@ import dotenv from 'dotenv';
 import path from 'path';
 import footballReservationsRoutes from './routes/footballReservations.js';
 
+import metasAuthRoutes from './routes/metasAuth.js';
+
+import metasObjectivesRoutes from './routes/metasObjectives.js';
+import metasRecordsRoutes from './routes/metasRecords.js';
+import metasDashboardRoutes from './routes/metasDashboard.js';
+
 // Importar __dirname en ES module
 const __dirname = path.resolve();
 
@@ -25,6 +31,12 @@ app.use(express.json());
 // Rutas de la API
 app.use('/api/reservations', reservationRoutes);
 app.use('/api/football-reservations', footballReservationsRoutes);
+
+// metas 
+app.use('/api/metas/auth', metasAuthRoutes);
+app.use('/api/metas/objetivos', metasObjectivesRoutes);
+app.use('/api/metas/registros', metasRecordsRoutes);
+app.use('/api/metas/dashboard', metasDashboardRoutes);
 
 // Si se define SERVE_FRONTEND, servir archivos estáticos
 if (process.env.SERVE_FRONTEND === 'true') {
