@@ -1,6 +1,7 @@
 .dashboard {
   padding: 20px;
   font-family: sans-serif;
+ 
 }
 
 .kanban-container {
@@ -86,4 +87,58 @@
 }
 .meta-card button {
   margin-right: 4px;
+}
+
+
+
+
+.dashboard-metrica {
+  margin-bottom: 20px;
+}
+
+.metrica-textos {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 8px;
+}
+
+.metrica-bar {
+  display: flex;
+  height: 20px;
+  width: 100%;
+  background: #eee;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.metrica-bar-hecho {
+  background-color: #4caf50; /* verde */
+}
+
+.metrica-bar-parcial {
+  background-color: #ffeb3b; /* amarillo */
+}
+
+.metrica-bar-no-hecho {
+  background-color: #f44336; /* rojo */
+}
+
+.metrica-resumen, .metrica-categorias {
+  margin-top: 10px;
+  padding: 8px;
+  background: #f4f4f4;
+  border-radius: 8px;
+}
+
+.metrica-resumen p, .metrica-categorias ul {
+  margin: 4px 0;
+}
+
+.metrica-categorias ul {
+  list-style: none;
+  padding-left: 0;
+}
+
+.metrica-categorias li {
+  margin-left: 8px;
 }

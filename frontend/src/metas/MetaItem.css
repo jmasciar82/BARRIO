@@ -1,54 +1,43 @@
 .meta-card {
-  background: #fff;
   border: 1px solid #ccc;
+  padding: 15px;
+  margin-bottom: 12px;
   border-radius: 8px;
-  padding: 12px;
-  margin-bottom: 10px;
-  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-  transition: transform 0.2s;
-}
-
-.meta-card:hover {
-  transform: translateY(-2px);
-}
-
-.meta-title {
-  margin: 0 0 6px 0;
-  font-size: 16px;
-}
-
-.meta-detail {
-  margin: 2px 0;
-  font-size: 14px;
-}
-
-.meta-input {
-  width: 100%;
-  padding: 6px;
-  margin: 4px 0;
-  box-sizing: border-box;
+  background-color: #f9f9f9;
 }
 
 .meta-actions {
-  margin-top: 8px;
+  margin-top: 10px;
   display: flex;
-  gap: 6px;
+  gap: 8px;
 }
 
-.meta-actions button {
-  padding: 6px 10px;
+.meta-estado {
+  margin-top: 10px;
+  display: flex;
+  gap: 5px;
+}
+
+.meta-estado button {
   border: none;
-  border-radius: 4px;
+  padding: 5px 10px;
+  border-radius: 5px;
   cursor: pointer;
-  background: #eee;
-  transition: background 0.2s;
+  background-color: #eee;
+  font-size: 1.1rem;
 }
 
-.meta-actions button:hover {
-  background: #ddd;
+.meta-estado button.active {
+  background-color: #4caf50;
+  color: white;
 }
 
-.meta-actions button:disabled {
-  cursor: not-allowed;
-  opacity: 0.6;
+.meta-estado button:nth-child(2).active {
+  background-color: #ffca28;
+  color: black;
+}
+
+.meta-estado button:nth-child(3).active {
+  background-color: #f44336;
+  color: white;
 }
