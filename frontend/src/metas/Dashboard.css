@@ -1,0 +1,89 @@
+.dashboard {
+  padding: 20px;
+  font-family: sans-serif;
+}
+
+.kanban-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.meta-card {
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  padding: 12px;
+  width: 200px;
+  background: #fefefe;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  box-shadow: 1px 1px 5px rgba(0,0,0,0.1);
+}
+
+.meta-actions button {
+  margin-right: 5px;
+  padding: 4px 8px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.meta-actions button.active {
+  background-color: #4caf50;
+  color: white;
+}
+
+.delete-btn {
+  align-self: flex-end;
+  background: #f44336;
+  color: white;
+  border: none;
+  padding: 4px 8px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.delete-btn:hover {
+  background: #d32f2f;
+}
+
+/* MetaForm */
+.meta-form {
+  margin-bottom: 20px;
+}
+.meta-form form {
+  display: flex;
+  gap: 10px;
+}
+.meta-form input {
+  flex: 1;
+  padding: 6px 10px;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+}
+.meta-form button {
+  padding: 6px 12px;
+  border-radius: 4px;
+  border: none;
+  background-color: #1976d2;
+  color: white;
+  cursor: pointer;
+}
+.meta-form button:hover {
+  background-color: #1565c0;
+}
+.meta-form .error {
+  color: red;
+  margin-top: 5px;
+}
+.meta-card input {
+  width: 100%;
+  margin-bottom: 4px;
+  padding: 4px 6px;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+}
+.meta-card button {
+  margin-right: 4px;
+}

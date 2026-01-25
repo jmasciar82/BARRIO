@@ -58,3 +58,22 @@ export const updateObjective = async (req, res) => {
     res.status(500).json({ message: 'Error al actualizar objetivo' });
   }
 };
+export const deleteObjective = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const objetivo = await MetaObjective.findOneAndDelete({
+      _id: id,
+      userId: req.user.userId
+    });
+
+    if (!objetivo) {
+      return res.status(404).json({ message: 'Objetivo no encontrado' });
+    }
+
+    res.json({ message: 'Objetivo eliminado' });
+  } catch (error) {
+    console.error('DELETE OBJECTIVE ERROR:', error);
+    res.status(500).json({ message: 'Error al eliminar objetivo' });
+  }
+};
