@@ -1,27 +1,31 @@
 import { useState } from 'react';
 import axios from '../axios';
 import './MetaItem.css';
+
 const MetaItem = ({ meta, onUpdate, onDelete, registro = '', onEstadoChange }) => {
-  // Hooks siempre primero
   const [edit, setEdit] = useState(false);
+
   const [nombre, setNombre] = useState(meta?.nombre || '');
   const [categoria, setCategoria] = useState(meta?.categoria || '');
-  const [peso, setPeso] = useState(meta?.peso || '');
+  const [impacto, setImpacto] = useState(meta?.impacto || 5);
+  const [esfuerzo, setEsfuerzo] = useState(meta?.esfuerzo || 5);
+
   const [estado, setEstado] = useState(registro);
   const hoy = new Date().toISOString().slice(0, 10);
 
-  // Si meta no está definido, mostrar algo neutral
   if (!meta) {
     return <div className="meta-card">Cargando meta...</div>;
   }
 
-  // resto del componente
+  const prioridad = (impacto / esfuerzo).toFixed(2);
+
   const handleSave = async () => {
     try {
       const res = await axios.put(`/metas/objetivos/${meta._id}`, {
         nombre,
         categoria,
-        peso,
+        impacto,
+        esfuerzo,
       });
       onUpdate(res.data);
       setEdit(false);
@@ -66,16 +70,35 @@ const MetaItem = ({ meta, onUpdate, onDelete, registro = '', onEstadoChange }) =
             value={nombre}
             onChange={(e) => setNombre(e.target.value)}
           />
+
           <input
             type="text"
             value={categoria}
             onChange={(e) => setCategoria(e.target.value)}
           />
+
+          <label>Impacto: {impacto}</label>
           <input
-            type="number"
-            value={peso}
-            onChange={(e) => setPeso(e.target.value)}
+            type="range"
+            min="1"
+            max="10"
+            value={impacto}
+            onChange={(e) => setImpacto(Number(e.target.value))}
           />
+
+          <label>Esfuerzo: {esfuerzo}</label>
+          <input
+            type="range"
+            min="1"
+            max="10"
+            value={esfuerzo}
+            onChange={(e) => setEsfuerzo(Number(e.target.value))}
+          />
+
+          <div className="meta-prioridad">
+            🔥 Prioridad: <strong>{prioridad}</strong>
+          </div>
+
           <div className="meta-actions">
             <button onClick={handleSave}>💾 Guardar</button>
             <button onClick={() => setEdit(false)}>❌ Cancelar</button>
@@ -84,8 +107,16 @@ const MetaItem = ({ meta, onUpdate, onDelete, registro = '', onEstadoChange }) =
       ) : (
         <>
           <h3>{nombre}</h3>
-          <p>Categoria: {categoria}</p>
-          <p>Peso: {peso}</p>
+          <p>Categoría: {categoria}</p>
+
+          <p>
+            Impacto: <strong>{impacto}</strong> · Esfuerzo:{' '}
+            <strong>{esfuerzo}</strong>
+          </p>
+
+          <p className="meta-prioridad">
+            🎯 Prioridad estratégica: <strong>{prioridad}</strong>
+          </p>
 
           <div className="meta-estado">
             <button

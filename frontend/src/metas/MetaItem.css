@@ -41,3 +41,31 @@
   background-color: #f44336;
   color: white;
 }
+.meta-form {
+  background: #111;
+  padding: 16px;
+  border-radius: 10px;
+  margin-bottom: 20px;
+  color: #fff;
+}
+
+.meta-form input[type="text"] {
+  width: 100%;
+  margin-bottom: 10px;
+  padding: 8px;
+  border-radius: 6px;
+  border: none;
+}
+
+.meta-form input[type="range"] {
+  width: 100%;
+  margin-bottom: 12px;
+}
+
+.prioridad-box {
+  background: #222;
+  padding: 8px;
+  border-radius: 6px;
+  margin: 10px 0;
+  text-align: center;
+}

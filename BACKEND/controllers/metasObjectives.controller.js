@@ -18,17 +18,24 @@ export const getObjectives = async (req, res) => {
 
 export const createObjective = async (req, res) => {
   try {
-    const { nombre, categoria, peso } = req.body;
+    const { nombre, categoria, impacto, esfuerzo } = req.body;
 
     if (!nombre) {
       return res.status(400).json({ message: 'El nombre del objetivo es obligatorio' });
+    }
+
+    if (!impacto || !esfuerzo) {
+      return res
+        .status(400)
+        .json({ message: 'Impacto y esfuerzo son obligatorios' });
     }
 
     const objetivo = await MetaObjective.create({
       userId: req.user.userId,
       nombre,
       categoria: categoria || '',
-      peso: peso || 1
+      impacto: impacto ?? 5,
+      esfuerzo: esfuerzo ?? 5
     });
 
     res.status(201).json(objetivo);
@@ -58,6 +65,7 @@ export const updateObjective = async (req, res) => {
     res.status(500).json({ message: 'Error al actualizar objetivo' });
   }
 };
+
 export const deleteObjective = async (req, res) => {
   try {
     const { id } = req.params;

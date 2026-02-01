@@ -83,16 +83,24 @@ const Dashboard = () => {
       {/* Lista tipo Kanban */}
       <div className="metas-grid">
         {metas.length === 0 && <p>No hay metas creadas</p>}
-        {metas.map((meta) => (
-          <MetaItem
-            key={meta._id}
-            meta={meta}
-            registro={registros[meta._id] || ''}
-            onUpdate={handleUpdate}
-            onDelete={handleDelete}
-            onEstadoChange={handleEstadoChange}
-          />
-        ))}
+        {metas
+          .slice()
+          .sort((a, b) => {
+            const prioridadA = (a.impacto || 1) / (a.esfuerzo || 1);
+            const prioridadB = (b.impacto || 1) / (b.esfuerzo || 1);
+            return prioridadB - prioridadA; // DESC
+          })
+          .map((meta) => (
+            <MetaItem
+              key={meta._id}
+              meta={meta}
+              registro={registros[meta._id] || ''}
+              onUpdate={handleUpdate}
+              onDelete={handleDelete}
+              onEstadoChange={handleEstadoChange}
+            />
+          ))}
+
       </div>
     </div>
   );
