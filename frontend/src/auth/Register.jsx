@@ -19,6 +19,9 @@ const Register = () => {
         password,
       });
 
+      // 🔑 clave
+      localStorage.removeItem('token');
+
       navigate('/login');
     } catch (err) {
       setError(

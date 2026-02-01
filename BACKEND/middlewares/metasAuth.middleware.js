@@ -16,6 +16,12 @@ const metasAuth = (req, res, next) => {
 
     const token = parts[1];
 
+    
+if (!token || token === 'undefined' || token === 'null') {
+  return res.status(401).json({ message: 'Token vacío o inválido' });
+}
+
+
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
     if (!decoded?.userId) {

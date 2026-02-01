@@ -1,111 +1,63 @@
-import React, { useEffect, useState } from 'react';
+// Login.jsx
+import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
+import backendURL from '../config';
+import { useAuth } from '../AuthContext';
 
-const Dashboard = () => {
-  const [metas, setMetas] = useState([]);
-  const [registros, setRegistros] = useState({});
-  const [loading, setLoading] = useState(true);
+const Login = () => {
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
+  const navigate = useNavigate();
+  const { login } = useAuth();
 
-  const token = localStorage.getItem('token');
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setError('');
 
-  const hoy = new Date().toISOString().slice(0, 10);
+    try {
+      const res = await axios.post(`${backendURL}/metas/auth/login`, {
+        email,
+        password,
+      });
 
-  const fetchMetas = async () => {
-    const res = await fetch('http://localhost:5075/api/metas/objetivos', {
-      headers: { Authorization: `Bearer ${token}` }
-    });
-    return res.json();
+      login(res.data.token);
+      navigate('/metas'); // o '/'
+    } catch (err) {
+      setError(
+        err.response?.data?.message || 'Error al iniciar sesión'
+      );
+    }
   };
-
-  const fetchRegistros = async () => {
-    const res = await fetch('http://localhost:5075/api/metas/registros/hoy', {
-      headers: { Authorization: `Bearer ${token}` }
-    });
-    const data = await res.json();
-
-    // convertir a mapa: { objetivoId: estado }
-    const map = {};
-    data.forEach(r => {
-      map[r.objetivoId] = r.estado;
-    });
-
-    return map;
-  };
-
-  const cargarTodo = async () => {
-    const [m, r] = await Promise.all([
-      fetchMetas(),
-      fetchRegistros()
-    ]);
-
-    setMetas(m);
-    setRegistros(r);
-    setLoading(false);
-  };
-
-  useEffect(() => {
-    cargarTodo();
-  }, []);
-
-  const guardarEstado = async (objetivoId, estado) => {
-    await fetch('http://localhost:5075/api/metas/registros', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${token}`
-      },
-      body: JSON.stringify({
-        objetivoId,
-        estado,
-        fecha: hoy
-      })
-    });
-
-    setRegistros(prev => ({
-      ...prev,
-      [objetivoId]: estado
-    }));
-  };
-
-  if (loading) return <p>Cargando...</p>;
 
   return (
-    <div style={{ padding: 20 }}>
-      <h2>📅 Seguimiento diario</h2>
+    <div>
+      <h2>Login</h2>
 
-      {metas.length === 0 && <p>No tenés metas</p>}
+      <form onSubmit={handleSubmit}>
+        <input
+          type="email"
+          placeholder="Email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          required
+        />
 
-      {metas.map(meta => (
-        <div
-          key={meta._id}
-          style={{
-            border: '1px solid #ccc',
-            padding: 10,
-            marginBottom: 10
-          }}
-        >
-          <strong>{meta.nombre}</strong>
+        <input
+          type="password"
+          placeholder="Password"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          required
+        />
 
-          <div style={{ marginTop: 8 }}>
-            {['hecho', 'parcial', 'no_hecho'].map(op => (
-              <button
-                key={op}
-                onClick={() => guardarEstado(meta._id, op)}
-                style={{
-                  marginRight: 6,
-                  background:
-                    registros[meta._id] === op ? '#4caf50' : '#eee'
-                }}
-              >
-                {op === 'hecho' && '✅'}
-                {op === 'parcial' && '🟡'}
-                {op === 'no_hecho' && '❌'}
-              </button>
-            ))}
-          </div>
-        </div>
-      ))}
+        <button type="submit">Entrar</button>
+      </form>
+
+      {error && <p style={{ color: 'red' }}>{error}</p>}
     </div>
   );
 };
 
-export default Dashboard;
+export default Login;

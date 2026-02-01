@@ -6,7 +6,6 @@ export const AuthProvider = ({ children }) => {
   const [token, setToken] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  // 🔄 levantar token al iniciar la app
   useEffect(() => {
     const storedToken = localStorage.getItem('token');
     if (storedToken) {
@@ -25,17 +24,16 @@ export const AuthProvider = ({ children }) => {
     setToken(null);
   };
 
-  const value = {
-    token,
-    login,
-    logout,
-    isAuthenticated: !!token,
-  };
-
-  if (loading) return null; // o spinner global
-
   return (
-    <AuthContext.Provider value={value}>
+    <AuthContext.Provider
+      value={{
+        token,
+        login,
+        logout,
+        loading,
+        isAuthenticated: !!token,
+      }}
+    >
       {children}
     </AuthContext.Provider>
   );
