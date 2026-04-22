@@ -1,144 +1,67 @@
+:root {
+  --bg-color: #f8fafc;
+  --card-bg: #ffffff;
+  --primary: #4f46e5;
+  --hecho: #22c55e;
+  --parcial: #eab308;
+  --no-hecho: #ef4444;
+  --text-main: #1e293b;
+  --text-muted: #64748b;
+  --shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+}
+
 .dashboard {
-  padding: 20px;
-  font-family: sans-serif;
- 
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 2rem;
+  background-color: var(--bg-color);
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
 }
 
-.kanban-container {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
+.dashboard h2 {
+  font-size: 2rem;
+  color: var(--text-main);
+  margin-bottom: 1.5rem;
 }
 
-.meta-card {
-  border: 1px solid #ccc;
-  border-radius: 6px;
-  padding: 12px;
-  width: 200px;
-  background: #fefefe;
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  box-shadow: 1px 1px 5px rgba(0,0,0,0.1);
-}
-
-.meta-actions button {
-  margin-right: 5px;
-  padding: 4px 8px;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-}
-
-.meta-actions button.active {
-  background-color: #4caf50;
-  color: white;
-}
-
-.delete-btn {
-  align-self: flex-end;
-  background: #f44336;
-  color: white;
-  border: none;
-  padding: 4px 8px;
-  border-radius: 4px;
-  cursor: pointer;
-}
-
-.delete-btn:hover {
-  background: #d32f2f;
-}
-
-/* MetaForm */
-.meta-form {
-  margin-bottom: 20px;
-}
-.meta-form form {
-  display: flex;
-  gap: 10px;
-}
-.meta-form input {
-  flex: 1;
-  padding: 6px 10px;
-  border-radius: 4px;
-  border: 1px solid #ccc;
-}
-.meta-form button {
-  padding: 6px 12px;
-  border-radius: 4px;
-  border: none;
-  background-color: #1976d2;
-  color: white;
-  cursor: pointer;
-}
-.meta-form button:hover {
-  background-color: #1565c0;
-}
-.meta-form .error {
-  color: red;
-  margin-top: 5px;
-}
-.meta-card input {
-  width: 100%;
-  margin-bottom: 4px;
-  padding: 4px 6px;
-  border-radius: 4px;
-  border: 1px solid #ccc;
-}
-.meta-card button {
-  margin-right: 4px;
-}
-
-
-
-
+/* Métricas */
 .dashboard-metrica {
-  margin-bottom: 20px;
+  background: var(--card-bg);
+  padding: 1.5rem;
+  border-radius: 12px;
+  box-shadow: var(--shadow);
+  margin-bottom: 2rem;
 }
 
 .metrica-textos {
   display: flex;
-  justify-content: space-between;
-  margin-bottom: 8px;
+  justify-content: space-around;
+  margin-bottom: 1rem;
 }
 
 .metrica-bar {
   display: flex;
-  height: 20px;
-  width: 100%;
-  background: #eee;
-  border-radius: 10px;
+  height: 12px;
+  background: #e2e8f0;
+  border-radius: 6px;
   overflow: hidden;
+  margin: 1rem 0;
 }
 
-.metrica-bar-hecho {
-  background-color: #4caf50; /* verde */
+.metrica-bar-hecho { background-color: var(--hecho); }
+.metrica-bar-parcial { background-color: var(--parcial); }
+.metrica-bar-no-hecho { background-color: var(--no-hecho); }
+
+.metrica-resumen {
+  display: flex;
+  gap: 20px;
+  font-size: 0.9rem;
+  color: var(--text-muted);
 }
 
-.metrica-bar-parcial {
-  background-color: #ffeb3b; /* amarillo */
-}
-
-.metrica-bar-no-hecho {
-  background-color: #f44336; /* rojo */
-}
-
-.metrica-resumen, .metrica-categorias {
-  margin-top: 10px;
-  padding: 8px;
-  background: #f4f4f4;
-  border-radius: 8px;
-}
-
-.metrica-resumen p, .metrica-categorias ul {
-  margin: 4px 0;
-}
-
-.metrica-categorias ul {
-  list-style: none;
-  padding-left: 0;
-}
-
-.metrica-categorias li {
-  margin-left: 8px;
+/* Grid de Metas */
+.metas-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 1.5rem;
 }

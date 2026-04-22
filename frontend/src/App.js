@@ -9,6 +9,8 @@ import Login from './auth/Login';
 import Register from './auth/Register';
 import ProtectedRoute from './auth/ProtectedRoute';
 import Dashboard from './metas/Dashboard';
+import TrucoGame from "./components/truco/TrucoGame";
+
 
 function App() {
   return (
@@ -23,6 +25,9 @@ function App() {
         {/* AUTH */}
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
+        {/* truco */}
+        <Route path="/truco" element={<TrucoGame />} />
+
 
         {/* METAS (PROTEGIDO) */}
         <Route

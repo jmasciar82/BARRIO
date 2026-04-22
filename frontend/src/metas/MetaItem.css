@@ -1,71 +1,66 @@
 .meta-card {
-  border: 1px solid #ccc;
-  padding: 15px;
-  margin-bottom: 12px;
-  border-radius: 8px;
-  background-color: #f9f9f9;
+  background: white;
+  padding: 1.5rem;
+  border-radius: 12px;
+  box-shadow: var(--shadow);
+  border-top: 5px solid #e2e8f0;
+  display: flex;
+  flex-direction: column;
+  transition: transform 0.2s;
 }
 
-.meta-actions {
-  margin-top: 10px;
-  display: flex;
-  gap: 8px;
+.meta-card:hover { transform: translateY(-5px); }
+
+/* Color de borde según prioridad */
+.meta-card h3 { margin: 0 0 10px 0; color: var(--text-main); }
+
+.meta-prioridad {
+  margin: 10px 0;
+  font-size: 0.9rem;
+  background: #eff6ff;
+  padding: 5px 10px;
+  border-radius: 6px;
+  color: var(--primary);
 }
 
 .meta-estado {
-  margin-top: 10px;
   display: flex;
-  gap: 5px;
+  gap: 10px;
+  margin: 15px 0;
 }
 
 .meta-estado button {
-  border: none;
-  padding: 5px 10px;
-  border-radius: 5px;
+  flex: 1;
+  padding: 8px;
+  border: 1px solid #e2e8f0;
+  border-radius: 6px;
+  background: white;
   cursor: pointer;
-  background-color: #eee;
-  font-size: 1.1rem;
+  filter: grayscale(1);
+  transition: all 0.2s;
 }
 
 .meta-estado button.active {
-  background-color: #4caf50;
-  color: white;
+  filter: grayscale(0);
+  background: #f8fafc;
+  border-color: var(--primary);
+  transform: scale(1.1);
 }
 
-.meta-estado button:nth-child(2).active {
-  background-color: #ffca28;
-  color: black;
+.meta-actions {
+  display: flex;
+  justify-content: space-between;
+  margin-top: auto;
+  padding-top: 15px;
+  border-top: 1px solid #f1f5f9;
 }
 
-.meta-estado button:nth-child(3).active {
-  background-color: #f44336;
-  color: white;
-}
-.meta-form {
-  background: #111;
-  padding: 16px;
-  border-radius: 10px;
-  margin-bottom: 20px;
-  color: #fff;
-}
-
-.meta-form input[type="text"] {
-  width: 100%;
-  margin-bottom: 10px;
-  padding: 8px;
-  border-radius: 6px;
+.meta-actions button {
+  background: none;
   border: none;
+  color: var(--text-muted);
+  cursor: pointer;
+  font-size: 0.85rem;
 }
 
-.meta-form input[type="range"] {
-  width: 100%;
-  margin-bottom: 12px;
-}
-
-.prioridad-box {
-  background: #222;
-  padding: 8px;
-  border-radius: 6px;
-  margin: 10px 0;
-  text-align: center;
-}
+.meta-actions button:hover { color: var(--primary); }

@@ -12,6 +12,7 @@ import metasObjectivesRoutes from './routes/metasObjectives.js';
 import metasRecordsRoutes from './routes/metasRecords.js';
 import metasDashboardRoutes from './routes/metasDashboard.js';
 
+import trucoRoutes from './routes/truco.routes.js';
 // Importar __dirname en ES module
 const __dirname = path.resolve();
 
@@ -38,6 +39,9 @@ app.use('/api/metas/objetivos', metasObjectivesRoutes);
 app.use('/api/metas/registros', metasRecordsRoutes);
 app.use('/api/metas/dashboard', metasDashboardRoutes);
 
+
+
+
 // Si se define SERVE_FRONTEND, servir archivos estáticos
 if (process.env.SERVE_FRONTEND === 'true') {
   app.use(express.static(path.join(__dirname, 'client', 'build')));
@@ -46,6 +50,9 @@ if (process.env.SERVE_FRONTEND === 'true') {
     res.sendFile(path.resolve(__dirname, 'client', 'build', 'index.html'));
   });
 }
+
+
+app.use('/api/truco', trucoRoutes);
 
 // Error handling global
 app.use((err, req, res, next) => {
