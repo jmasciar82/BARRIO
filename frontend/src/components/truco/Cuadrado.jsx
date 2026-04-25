@@ -14,8 +14,8 @@ export default function Cuadrado({ valor, color = "white" }) {
 
 const contenedor = {
   position: "relative",
-  width: "50px",
-  height: "50px"
+  width: "40px",
+  height: "40px"
 };
 
 const base = { position: "absolute" };

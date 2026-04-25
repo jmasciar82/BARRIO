@@ -6,77 +6,77 @@ export default function TrucoGame() {
   const [puntosB, setPuntosB] = useState(0);
   const [modo, setModo] = useState(30);
   const [ganador, setGanador] = useState(null);
-  const [wakeLockActivo, setWakeLockActivo] = useState(false);
+  const [historial, setHistorial] = useState([]);
 
-  // 👉 SUMAR
+  const [nombreA, setNombreA] = useState(
+    localStorage.getItem("nombreA") || "NOSOTROS"
+  );
+  const [nombreB, setNombreB] = useState(
+    localStorage.getItem("nombreB") || "ELLOS"
+  );
+  const [editando, setEditando] = useState(null);
+
+  // guardar nombres
+  useEffect(() => {
+    localStorage.setItem("nombreA", nombreA);
+    localStorage.setItem("nombreB", nombreB);
+  }, [nombreA, nombreB]);
+
+  // registrar jugada
+  const registrarJugada = (equipo, puntos) => {
+    setHistorial(prev => [...prev, { equipo, puntos }]);
+  };
+
+  // sumar
   const sumarA = () => {
     if (!ganador && puntosA < modo) {
       setPuntosA(prev => prev + 1);
+      registrarJugada("A", 1);
     }
   };
 
   const sumarB = () => {
     if (!ganador && puntosB < modo) {
       setPuntosB(prev => prev + 1);
+      registrarJugada("B", 1);
     }
   };
 
-  // 👉 RESET
-  const reset = () => {
-    setPuntosA(0);
-    setPuntosB(0);
+  // deshacer
+  const deshacer = () => {
+    if (historial.length === 0) return;
+
+    const ultima = historial[historial.length - 1];
+
+    if (ultima.equipo === "A") {
+      setPuntosA(prev => Math.max(0, prev - ultima.puntos));
+    } else {
+      setPuntosB(prev => Math.max(0, prev - ultima.puntos));
+    }
+
+    setHistorial(prev => prev.slice(0, -1));
     setGanador(null);
   };
 
-  // 👉 GANADOR
+  // reset
+  const reset = () => {
+    setPuntosA(0);
+    setPuntosB(0);
+    setHistorial([]);
+    setGanador(null);
+  };
+
+  // ganador
   useEffect(() => {
-    if (puntosA >= modo) {
-      setGanador("A");
-    } else if (puntosB >= modo) {
-      setGanador("B");
-    }
+    if (puntosA >= modo) setGanador("A");
+    else if (puntosB >= modo) setGanador("B");
   }, [puntosA, puntosB, modo]);
 
-  // 👉 WAKE LOCK (pantalla activa)
-  useEffect(() => {
-    let wakeLock = null;
-
-    const activarWakeLock = async () => {
-      try {
-        if ("wakeLock" in navigator) {
-          wakeLock = await navigator.wakeLock.request("screen");
-          setWakeLockActivo(true);
-          console.log("🔋 Wake Lock activado");
-        }
-      } catch (err) {
-        console.log("Error Wake Lock:", err);
-      }
-    };
-
-    activarWakeLock();
-
-    const handleVisibilityChange = () => {
-      if (document.visibilityState === "visible") {
-        activarWakeLock();
-      }
-    };
-
-    document.addEventListener("visibilitychange", handleVisibilityChange);
-
-    return () => {
-      if (wakeLock) {
-        wakeLock.release();
-      }
-      document.removeEventListener("visibilitychange", handleVisibilityChange);
-    };
-  }, []);
-
-  // 👉 TEXTO GANADOR
   const textoGanador =
     ganador === "A"
-      ? "¡Ganamos nosotros!"
+      ? `¡Ganó ${nombreA}!`
       : ganador === "B"
-      ? "¡Ganaron ellos!"
+      ? `¡Ganó ${nombreB}!`
       : null;
 
   return (
@@ -85,53 +85,19 @@ export default function TrucoGame() {
       {/* HEADER */}
       <div style={{
         textAlign: "center",
-        padding: "10px",
+        padding: 10,
         background: "#111",
         color: "white"
       }}>
-        <h2>Anotador Truco</h2>
+        <h2>Truco · {modo === 30 ? "A 30" : "A 15"}</h2>
 
-        {/* INDICADOR */}
-        <div style={{ fontSize: "0.8rem", color: "#aaa" }}>
-          {wakeLockActivo ? "🔋 Pantalla activa" : ""}
+        <div style={{ display: "flex", justifyContent: "center", gap: 10 }}>
+          <button onClick={() => setModo(15)}>A 15</button>
+          <button onClick={() => setModo(30)}>A 30</button>
         </div>
 
-        <div style={{
-          display: "flex",
-          justifyContent: "center",
-          gap: "10px",
-          marginTop: "10px"
-        }}>
-          <button
-            onClick={() => setModo(15)}
-            style={{
-              padding: "10px 20px",
-              borderRadius: "8px",
-              border: "none",
-              background: modo === 15 ? "#22c55e" : "#444",
-              color: "white"
-            }}
-          >
-            A 15
-          </button>
-
-          <button
-            onClick={() => setModo(30)}
-            style={{
-              padding: "10px 20px",
-              borderRadius: "8px",
-              border: "none",
-              background: modo === 30 ? "#22c55e" : "#444",
-              color: "white"
-            }}
-          >
-            A 30
-          </button>
-        </div>
-
-        <button onClick={reset} style={{ marginTop: "10px" }}>
-          Reset
-        </button>
+        <button onClick={deshacer}>↩️ Deshacer</button>
+        <button onClick={reset}>Reset</button>
       </div>
 
       {/* GANADOR */}
@@ -139,8 +105,7 @@ export default function TrucoGame() {
         <div style={{
           textAlign: "center",
           fontSize: "2rem",
-          background: ganador === "A" ? "#1e3a8a" : "#991b1b",
-          color: "white"
+          background: "gold"
         }}>
           {textoGanador}
         </div>
@@ -150,31 +115,42 @@ export default function TrucoGame() {
       <div style={{
         flex: 1,
         display: "flex",
-        background: "radial-gradient(circle at center, #2e7d32 0%, #1b5e20 100%)"
+        background: "radial-gradient(circle, #2e7d32, #1b5e20)"
       }}>
         <div style={{ flex: 1, display: "flex", position: "relative" }}>
 
-          {/* Línea */}
+          {/* línea */}
           <div style={{
             position: "absolute",
             left: "50%",
             top: 0,
             bottom: 0,
-            width: "4px",
+            width: 4,
             background: "rgba(255,255,255,0.3)",
-            transform: "translateX(-50%)",
-            pointerEvents: "none"
+            transform: "translateX(-50%)"
           }} />
 
           {/* NOSOTROS */}
-          <div onClick={sumarA} style={lado}>
-            <Titulo texto="NOSOTROS" />
+          <div style={lado} onClick={sumarA}>
+            <TituloEditable
+              texto={nombreA}
+              setTexto={setNombreA}
+              lado="A"
+              editando={editando}
+              setEditando={setEditando}
+            />
             <Marcador puntos={puntosA} modo={modo} />
           </div>
 
           {/* ELLOS */}
-          <div onClick={sumarB} style={lado}>
-            <Titulo texto="ELLOS" />
+          <div style={lado} onClick={sumarB}>
+            <TituloEditable
+              texto={nombreB}
+              setTexto={setNombreB}
+              lado="B"
+              editando={editando}
+              setEditando={setEditando}
+            />
             <Marcador puntos={puntosB} modo={modo} />
           </div>
 
@@ -184,28 +160,70 @@ export default function TrucoGame() {
   );
 }
 
-// estilos reutilizables
 const lado = {
   flex: 1,
   display: "flex",
-  flexDirection: "column",
   justifyContent: "center",
   alignItems: "center",
-  color: "white",
-  position: "relative"
+  position: "relative",
+  color: "white"
 };
 
-function Titulo({ texto }) {
+// 👇 COMPONENTE EDITABLE CORREGIDO
+function TituloEditable({ texto, setTexto, lado, editando, setEditando }) {
+  const esEditando = editando === lado;
+  const valorDefault = lado === "A" ? "NOSOTROS" : "ELLOS";
+
+  const handleGuardar = (valor) => {
+    const limpio = valor.trim();
+
+    if (limpio === "") {
+      setTexto(valorDefault);
+    } else {
+      setTexto(limpio.toUpperCase());
+    }
+
+    setEditando(null);
+  };
+
   return (
-    <div style={{
-      position: "absolute",
-      top: "10px",
-      fontSize: "1.5rem",
-      fontWeight: "bold",
-      letterSpacing: "2px",
-      textShadow: "2px 2px 6px rgba(0,0,0,0.7)"
-    }}>
-      {texto}
+    <div
+      style={{ position: "absolute", top: 10 }}
+      onClick={(e) => e.stopPropagation()}
+    >
+      {esEditando ? (
+        <input
+          autoFocus
+          defaultValue={texto}
+          onClick={(e) => e.stopPropagation()}
+          onBlur={(e) => handleGuardar(e.target.value)}
+          onKeyDown={(e) => {
+            if (e.key === "Enter") {
+              handleGuardar(e.target.value);
+            }
+          }}
+          style={{
+            fontSize: "1rem",
+            textAlign: "center",
+            borderRadius: "6px",
+            border: "none",
+            padding: "4px"
+          }}
+        />
+      ) : (
+        <div
+          onClick={(e) => {
+            e.stopPropagation();
+            setEditando(lado);
+          }}
+          style={{
+            fontWeight: "bold",
+            cursor: "pointer"
+          }}
+        >
+          {texto}
+        </div>
+      )}
     </div>
   );
 }
