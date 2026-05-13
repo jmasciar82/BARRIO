@@ -1,0 +1,183 @@
+body {
+
+  margin: 0;
+
+  font-family: sans-serif;
+
+  background:
+    radial-gradient(circle at top,
+    #1b5e20,
+    #081c0d);
+
+  min-height: 100vh;
+}
+
+.truco-app {
+
+  padding: 30px;
+}
+
+.truco-app h1 {
+
+  text-align: center;
+
+  color: white;
+
+  font-size: 3rem;
+
+  margin-bottom: 30px;
+}
+
+.teams-container {
+
+  display: grid;
+
+  grid-template-columns:
+    1fr 1fr;
+
+  gap: 24px;
+}
+
+.mode-selector {
+
+  display: flex;
+
+  justify-content: center;
+
+  gap: 20px;
+
+  margin-bottom: 24px;
+}
+
+.mode-selector button {
+
+  border: none;
+
+  border-radius: 14px;
+
+  padding: 12px 24px;
+
+  cursor: pointer;
+
+  font-weight: bold;
+}
+
+.active-mode {
+
+  background: gold;
+}
+
+.top-actions {
+
+  display: flex;
+
+  justify-content: center;
+
+  margin-bottom: 20px;
+}
+
+.undo-btn {
+
+  border: none;
+
+  border-radius: 14px;
+
+  padding: 12px 24px;
+
+  cursor: pointer;
+
+  font-weight: bold;
+
+  font-size: 1rem;
+
+  background: #ffcc00;
+
+  color: black;
+}
+
+.winner-banner {
+
+  background: gold;
+
+  color: black;
+
+  padding: 20px;
+
+  border-radius: 20px;
+
+  text-align: center;
+
+  font-size: 2rem;
+
+  font-weight: bold;
+
+  margin-bottom: 20px;
+
+  display: flex;
+
+  flex-direction: column;
+
+  gap: 20px;
+
+  align-items: center;
+}
+
+.new-game-btn {
+
+  border: none;
+
+  border-radius: 14px;
+
+  padding: 14px 24px;
+
+  cursor: pointer;
+
+  font-weight: bold;
+
+  font-size: 1rem;
+}
+
+.shuffle-banner {
+
+  background:
+    linear-gradient(
+      135deg,
+      #ffcc00,
+      #ff8800
+    );
+
+  color: black;
+
+  padding: 20px;
+
+  border-radius: 20px;
+
+  text-align: center;
+
+  font-size: 2rem;
+
+  font-weight: bold;
+
+  margin-bottom: 20px;
+
+  animation:
+    pulse 0.8s infinite;
+}
+
+@keyframes pulse {
+
+  0% {
+
+    transform: scale(1);
+  }
+
+  50% {
+
+    transform: scale(1.04);
+  }
+
+  100% {
+
+    transform: scale(1);
+  }
+}

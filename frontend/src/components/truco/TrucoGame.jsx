@@ -1,229 +1,404 @@
-import React, { useState, useEffect } from "react";
-import Marcador from "./Marcador";
+import {
+  useState,
+  useEffect
+} from "react";
+
+import TeamPanel
+  from "./components/TeamPanel";
+
+import PlayerManager
+  from "./components/PlayerManager";
+
+import Ranking
+  from "./components/Ranking";
+
+import {
+  guardarPartida
+} from "./services/trucoApi";
+
+import "./styles/truco.css";
+import "./styles/ranking.css";
 
 export default function TrucoGame() {
-  const [puntosA, setPuntosA] = useState(0);
-  const [puntosB, setPuntosB] = useState(0);
-  const [modo, setModo] = useState(30);
-  const [ganador, setGanador] = useState(null);
-  const [historial, setHistorial] = useState([]);
 
-  const [nombreA, setNombreA] = useState(
-    localStorage.getItem("nombreA") || "NOSOTROS"
-  );
-  const [nombreB, setNombreB] = useState(
-    localStorage.getItem("nombreB") || "ELLOS"
-  );
-  const [editando, setEditando] = useState(null);
+  const [modo, setModo] =
+    useState(30);
 
-  // guardar nombres
+  const [jugadores, setJugadores] =
+    useState([]);
+
+  const [equipoA, setEquipoA] =
+    useState([]);
+
+  const [equipoB, setEquipoB] =
+    useState([]);
+
+  const [puntosA, setPuntosA] =
+    useState(0);
+
+  const [puntosB, setPuntosB] =
+    useState(0);
+
+  const [historial, setHistorial] =
+    useState([]);
+
+  const [ganadorPartida,
+    setGanadorPartida] =
+      useState(null);
+
+  const [partidaGuardada,
+    setPartidaGuardada] =
+      useState(false);
+
+  const [sorteando,
+    setSorteando] =
+      useState(false);
+
+  const limite = modo;
+
+  const equiposListos =
+    equipoA.length === 2 &&
+    equipoB.length === 2;
+
+  const partidaTerminada =
+    ganadorPartida !== null;
+
+  /* DETECTAR GANADOR */
+
   useEffect(() => {
-    localStorage.setItem("nombreA", nombreA);
-    localStorage.setItem("nombreB", nombreB);
-  }, [nombreA, nombreB]);
 
-  // registrar jugada
-  const registrarJugada = (equipo, puntos) => {
-    setHistorial(prev => [...prev, { equipo, puntos }]);
-  };
+    if (
+      puntosA >= limite &&
+      !ganadorPartida
+    ) {
 
-  // sumar
-  const sumarA = () => {
-    if (!ganador && puntosA < modo) {
-      setPuntosA(prev => prev + 1);
-      registrarJugada("A", 1);
+      setGanadorPartida("A");
     }
-  };
 
-  const sumarB = () => {
-    if (!ganador && puntosB < modo) {
-      setPuntosB(prev => prev + 1);
-      registrarJugada("B", 1);
+    if (
+      puntosB >= limite &&
+      !ganadorPartida
+    ) {
+
+      setGanadorPartida("B");
     }
+
+  }, [
+    puntosA,
+    puntosB,
+    limite,
+    ganadorPartida
+  ]);
+
+  /* GUARDAR PARTIDA */
+
+  useEffect(() => {
+
+    const guardar =
+      async () => {
+
+        if (
+          !ganadorPartida ||
+          partidaGuardada
+        ) return;
+
+        try {
+
+          await guardarPartida({
+
+            equipoA,
+
+            equipoB,
+
+            puntosA,
+
+            puntosB,
+
+            modo,
+
+            ganador:
+              ganadorPartida
+          });
+
+          setPartidaGuardada(true);
+
+        } catch (error) {
+
+          console.error(error);
+        }
+      };
+
+    guardar();
+
+  }, [
+    ganadorPartida
+  ]);
+
+  const nombreGanador =
+    ganadorPartida === "A"
+      ? equipoA.join(" & ")
+      : ganadorPartida === "B"
+        ? equipoB.join(" & ")
+        : null;
+
+  const guardarEstado = () => {
+
+    setHistorial(prev => [
+      ...prev,
+      {
+        puntosA,
+        puntosB
+      }
+    ]);
   };
 
-  // deshacer
   const deshacer = () => {
-    if (historial.length === 0) return;
 
-    const ultima = historial[historial.length - 1];
+    if (historial.length === 0)
+      return;
 
-    if (ultima.equipo === "A") {
-      setPuntosA(prev => Math.max(0, prev - ultima.puntos));
-    } else {
-      setPuntosB(prev => Math.max(0, prev - ultima.puntos));
-    }
+    const ultimo =
+      historial[
+        historial.length - 1
+      ];
 
-    setHistorial(prev => prev.slice(0, -1));
-    setGanador(null);
+    setPuntosA(ultimo.puntosA);
+
+    setPuntosB(ultimo.puntosB);
+
+    setHistorial(prev =>
+      prev.slice(0, -1)
+    );
   };
 
-  // reset
-  const reset = () => {
+  const sumarA = (valor) => {
+
+    if (
+      partidaTerminada ||
+      !equiposListos ||
+      sorteando
+    ) return;
+
+    guardarEstado();
+
+    setPuntosA(prev =>
+      Math.min(
+        prev + valor,
+        limite
+      )
+    );
+  };
+
+  const sumarB = (valor) => {
+
+    if (
+      partidaTerminada ||
+      !equiposListos ||
+      sorteando
+    ) return;
+
+    guardarEstado();
+
+    setPuntosB(prev =>
+      Math.min(
+        prev + valor,
+        limite
+      )
+    );
+  };
+
+  const sortearEquipos = () => {
+
+    if (jugadores.length < 4) {
+
+      alert(
+        "Debe haber al menos 4 jugadores"
+      );
+
+      return;
+    }
+
+    setSorteando(true);
+
+    let interval;
+
+    interval = setInterval(() => {
+
+      const mezclaTemp =
+        [...jugadores]
+          .sort(
+            () =>
+              Math.random() - 0.5
+          );
+
+      const temp =
+        mezclaTemp.slice(0, 4);
+
+      setEquipoA([
+        temp[0],
+        temp[1]
+      ]);
+
+      setEquipoB([
+        temp[2],
+        temp[3]
+      ]);
+
+    }, 120);
+
+    setTimeout(() => {
+
+      clearInterval(interval);
+
+      const mezclaFinal =
+        [...jugadores]
+          .sort(
+            () =>
+              Math.random() - 0.5
+          );
+
+      const finales =
+        mezclaFinal.slice(0, 4);
+
+      setEquipoA([
+        finales[0],
+        finales[1]
+      ]);
+
+      setEquipoB([
+        finales[2],
+        finales[3]
+      ]);
+
+      nuevaPartida();
+
+      setSorteando(false);
+
+    }, 3500);
+  };
+
+  const nuevaPartida = () => {
+
     setPuntosA(0);
+
     setPuntosB(0);
+
     setHistorial([]);
-    setGanador(null);
-  };
 
-  // ganador
-  useEffect(() => {
-    if (puntosA >= modo) setGanador("A");
-    else if (puntosB >= modo) setGanador("B");
-  }, [puntosA, puntosB, modo]);
+    setGanadorPartida(null);
 
-  const textoGanador =
-    ganador === "A"
-      ? `¡Ganó ${nombreA}!`
-      : ganador === "B"
-      ? `¡Ganó ${nombreB}!`
-      : null;
-
-  return (
-    <div style={{ height: "100vh", display: "flex", flexDirection: "column" }}>
-
-      {/* HEADER */}
-      <div style={{
-        textAlign: "center",
-        padding: 10,
-        background: "#111",
-        color: "white"
-      }}>
-        <h2>Truco · {modo === 30 ? "A 30" : "A 15"}</h2>
-
-        <div style={{ display: "flex", justifyContent: "center", gap: 10 }}>
-          <button onClick={() => setModo(15)}>A 15</button>
-          <button onClick={() => setModo(30)}>A 30</button>
-        </div>
-
-        <button onClick={deshacer}>↩️ Deshacer</button>
-        <button onClick={reset}>Reset</button>
-      </div>
-
-      {/* GANADOR */}
-      {textoGanador && (
-        <div style={{
-          textAlign: "center",
-          fontSize: "2rem",
-          background: "gold"
-        }}>
-          {textoGanador}
-        </div>
-      )}
-
-      {/* PANTALLA */}
-      <div style={{
-        flex: 1,
-        display: "flex",
-        background: "radial-gradient(circle, #2e7d32, #1b5e20)"
-      }}>
-        <div style={{ flex: 1, display: "flex", position: "relative" }}>
-
-          {/* línea */}
-          <div style={{
-            position: "absolute",
-            left: "50%",
-            top: 0,
-            bottom: 0,
-            width: 4,
-            background: "rgba(255,255,255,0.3)",
-            transform: "translateX(-50%)"
-          }} />
-
-          {/* NOSOTROS */}
-          <div style={lado} onClick={sumarA}>
-            <TituloEditable
-              texto={nombreA}
-              setTexto={setNombreA}
-              lado="A"
-              editando={editando}
-              setEditando={setEditando}
-            />
-            <Marcador puntos={puntosA} modo={modo} />
-          </div>
-
-          {/* ELLOS */}
-          <div style={lado} onClick={sumarB}>
-            <TituloEditable
-              texto={nombreB}
-              setTexto={setNombreB}
-              lado="B"
-              editando={editando}
-              setEditando={setEditando}
-            />
-            <Marcador puntos={puntosB} modo={modo} />
-          </div>
-
-        </div>
-      </div>
-    </div>
-  );
-}
-
-const lado = {
-  flex: 1,
-  display: "flex",
-  justifyContent: "center",
-  alignItems: "center",
-  position: "relative",
-  color: "white"
-};
-
-// 👇 COMPONENTE EDITABLE CORREGIDO
-function TituloEditable({ texto, setTexto, lado, editando, setEditando }) {
-  const esEditando = editando === lado;
-  const valorDefault = lado === "A" ? "NOSOTROS" : "ELLOS";
-
-  const handleGuardar = (valor) => {
-    const limpio = valor.trim();
-
-    if (limpio === "") {
-      setTexto(valorDefault);
-    } else {
-      setTexto(limpio.toUpperCase());
-    }
-
-    setEditando(null);
+    setPartidaGuardada(false);
   };
 
   return (
-    <div
-      style={{ position: "absolute", top: 10 }}
-      onClick={(e) => e.stopPropagation()}
-    >
-      {esEditando ? (
-        <input
-          autoFocus
-          defaultValue={texto}
-          onClick={(e) => e.stopPropagation()}
-          onBlur={(e) => handleGuardar(e.target.value)}
-          onKeyDown={(e) => {
-            if (e.key === "Enter") {
-              handleGuardar(e.target.value);
-            }
-          }}
-          style={{
-            fontSize: "1rem",
-            textAlign: "center",
-            borderRadius: "6px",
-            border: "none",
-            padding: "4px"
-          }}
-        />
-      ) : (
-        <div
-          onClick={(e) => {
-            e.stopPropagation();
-            setEditando(lado);
-          }}
-          style={{
-            fontWeight: "bold",
-            cursor: "pointer"
-          }}
+    <div className="truco-app">
+
+      <h1>TRUCO PRO</h1>
+
+      <PlayerManager
+        jugadores={jugadores}
+        setJugadores={setJugadores}
+        sortearEquipos={sortearEquipos}
+      />
+
+      <div className="mode-selector">
+
+        <button
+          className={
+            modo === 15
+              ? "active-mode"
+              : ""
+          }
+          onClick={() => setModo(15)}
         >
-          {texto}
+          A 15
+        </button>
+
+        <button
+          className={
+            modo === 30
+              ? "active-mode"
+              : ""
+          }
+          onClick={() => setModo(30)}
+        >
+          A 30
+        </button>
+
+      </div>
+
+      <div className="top-actions">
+
+        <button
+          className="undo-btn"
+          onClick={deshacer}
+        >
+          ↩ Deshacer
+        </button>
+
+      </div>
+
+      {sorteando && (
+
+        <div className="shuffle-banner">
+
+          🎲 Sorteando equipos...
+
         </div>
       )}
+
+      {nombreGanador && (
+
+        <div className="winner-banner">
+
+          🏆 GANÓ {nombreGanador}
+
+          <button
+            className="new-game-btn"
+            onClick={nuevaPartida}
+          >
+            Nueva Partida
+          </button>
+
+        </div>
+      )}
+
+      <div className="teams-container">
+
+        <TeamPanel
+          nombre={
+            equipoA.length > 0
+              ? equipoA.join(" & ")
+              : "EQUIPO A"
+          }
+          puntos={puntosA}
+          modo={modo}
+          sumar={sumarA}
+          habilitado={
+            equiposListos &&
+            !sorteando
+          }
+        />
+
+        <TeamPanel
+          nombre={
+            equipoB.length > 0
+              ? equipoB.join(" & ")
+              : "EQUIPO B"
+          }
+          puntos={puntosB}
+          modo={modo}
+          sumar={sumarB}
+          habilitado={
+            equiposListos &&
+            !sorteando
+          }
+        />
+
+      </div>
+
+      <Ranking />
+
     </div>
   );
 }
