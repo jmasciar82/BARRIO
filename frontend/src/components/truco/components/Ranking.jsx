@@ -14,6 +14,14 @@ export default function Ranking() {
   const [ranking, setRanking] =
     useState(null);
 
+  const [expandJugadores,
+    setExpandJugadores] =
+      useState(false);
+
+  const [expandParejas,
+    setExpandParejas] =
+      useState(false);
+
   useEffect(() => {
 
     cargarRanking();
@@ -45,69 +53,111 @@ export default function Ranking() {
     );
   }
 
+  const jugadoresMostrar =
+    expandJugadores
+      ? ranking.jugadores
+      : ranking.jugadores.slice(0, 1);
+
+  const parejasMostrar =
+    expandParejas
+      ? ranking.parejas
+      : ranking.parejas.slice(0, 1);
+
   return (
     <div className="ranking-wrapper">
+
+      {/* JUGADORES */}
 
       <div className="ranking-panel">
 
         <h2>
-          🏆 Ranking Jugadores
+          🏆 Jugadores
         </h2>
 
-        {ranking.jugadores.length === 0 && (
-          <p>
-            Sin partidas todavía
-          </p>
-        )}
-
-        {ranking.jugadores.map(
+        {jugadoresMostrar.map(
           ([nombre, wins], i) => (
 
             <div
               key={i}
               className="ranking-item"
             >
-              <span>
+
+              <span
+                className="ranking-name"
+              >
                 #{i + 1} {nombre}
               </span>
 
               <strong>
                 {wins} wins
               </strong>
+
             </div>
           )
         )}
 
+        {ranking.jugadores.length > 3 && (
+
+          <button
+            className="ranking-expand"
+            onClick={() =>
+              setExpandJugadores(
+                !expandJugadores
+              )
+            }
+          >
+            {expandJugadores
+              ? "Ver menos ▲"
+              : "Ver más ▼"}
+          </button>
+        )}
+
       </div>
+
+      {/* PAREJAS */}
 
       <div className="ranking-panel">
 
         <h2>
-          🤝 Ranking Parejas
+          🤝 Parejas
         </h2>
 
-        {ranking.parejas.length === 0 && (
-          <p>
-            Sin partidas todavía
-          </p>
-        )}
-
-        {ranking.parejas.map(
+        {parejasMostrar.map(
           ([pareja, wins], i) => (
 
             <div
               key={i}
               className="ranking-item"
             >
-              <span>
+
+              <span
+                className="ranking-name"
+              >
                 #{i + 1} {pareja}
               </span>
 
               <strong>
                 {wins} wins
               </strong>
+
             </div>
           )
+        )}
+
+        {ranking.parejas.length > 3 && (
+
+          <button
+            className="ranking-expand"
+            onClick={() =>
+              setExpandParejas(
+                !expandParejas
+              )
+            }
+          >
+            {expandParejas
+              ? "Ver menos ▲"
+              : "Ver más ▼"}
+          </button>
         )}
 
       </div>

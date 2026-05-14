@@ -1,4 +1,6 @@
-import { useState } from "react";
+import {
+  useState
+} from "react";
 
 import "../styles/players.css";
 
@@ -6,10 +8,10 @@ const jugadoresFrecuentes = [
 
   "RAMI",
   "JUAN",
-  "QUIQUE",
-  "CHARLY",
+  "FEDE",
   "TINCHO",
-  "FEDE"
+  "CHARLY",
+  "QUIQUE"
 ];
 
 export default function PlayerManager({
@@ -18,8 +20,13 @@ export default function PlayerManager({
   sortearEquipos
 }) {
 
-  const [nuevo, setNuevo] =
+  const [nuevo,
+    setNuevo] =
     useState("");
+
+  /* =========================
+     AGREGAR
+  ========================= */
 
   const agregarJugador = (
     nombreInput
@@ -55,17 +62,43 @@ export default function PlayerManager({
     setNuevo("");
   };
 
-  const eliminarJugador = (index) => {
+  /* =========================
+     ELIMINAR
+  ========================= */
+
+  const eliminarJugador = (
+    index
+  ) => {
 
     setJugadores(prev =>
-      prev.filter((_, i) => i !== index)
+      prev.filter(
+        (_, i) => i !== index
+      )
     );
+  };
+
+  /* =========================
+     ENTER
+  ========================= */
+
+  const handleKeyDown = (
+    e
+  ) => {
+
+    if (e.key === "Enter") {
+
+      agregarJugador(nuevo);
+    }
   };
 
   return (
     <div className="players-panel">
 
-      <h2>Jugadores</h2>
+      <h2>
+        👥 Jugadores
+      </h2>
+
+      {/* QUICK PLAYERS */}
 
       <div className="quick-players">
 
@@ -86,6 +119,8 @@ export default function PlayerManager({
 
       </div>
 
+      {/* INPUT */}
+
       <div className="player-input">
 
         <input
@@ -93,6 +128,7 @@ export default function PlayerManager({
           onChange={(e) =>
             setNuevo(e.target.value)
           }
+          onKeyDown={handleKeyDown}
           placeholder="Nombre jugador"
         />
 
@@ -106,28 +142,38 @@ export default function PlayerManager({
 
       </div>
 
+      {/* PLAYERS */}
+
       <div className="players-grid">
 
-        {jugadores.map((j, i) => (
-          <div
-            key={i}
-            className="player-chip"
-          >
-            {j}
+        {jugadores.map(
+          (j, i) => (
 
-            <span
-              className="remove-player"
-              onClick={() =>
-                eliminarJugador(i)
-              }
+            <div
+              key={i}
+              className="player-chip"
             >
-              ✕
-            </span>
 
-          </div>
-        ))}
+              <span>
+                {j}
+              </span>
+
+              <span
+                className="remove-player"
+                onClick={() =>
+                  eliminarJugador(i)
+                }
+              >
+                ✕
+              </span>
+
+            </div>
+          )
+        )}
 
       </div>
+
+      {/* SHUFFLE */}
 
       <button
         className="shuffle-btn"

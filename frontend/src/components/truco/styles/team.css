@@ -1,7 +1,7 @@
 .team-panel {
 
   background:
-    rgba(255,255,255,0.08);
+    rgba(255, 255, 255, 0.08);
 
   backdrop-filter:
     blur(10px);
@@ -93,5 +93,16 @@
 
     grid-template-columns:
       1fr;
+
+    gap: 6px;
+  }
+
+  .score-buttons button {
+
+    padding: 10px;
+
+    font-size: 0.55rem;
+
+    border-radius: 12px;
   }
 }

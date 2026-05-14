@@ -54,6 +54,12 @@ export default function TrucoGame() {
     setSorteando] =
       useState(false);
 
+  /* POPUP JUGADORES */
+
+  const [showPlayers,
+    setShowPlayers] =
+      useState(false);
+
   const limite = modo;
 
   const equiposListos =
@@ -63,7 +69,9 @@ export default function TrucoGame() {
   const partidaTerminada =
     ganadorPartida !== null;
 
-  /* DETECTAR GANADOR */
+  /* =========================
+     GANADOR
+  ========================= */
 
   useEffect(() => {
 
@@ -90,7 +98,9 @@ export default function TrucoGame() {
     ganadorPartida
   ]);
 
-  /* GUARDAR PARTIDA */
+  /* =========================
+     GUARDAR PARTIDA
+  ========================= */
 
   useEffect(() => {
 
@@ -134,12 +144,20 @@ export default function TrucoGame() {
     ganadorPartida
   ]);
 
+  /* =========================
+     NOMBRE GANADOR
+  ========================= */
+
   const nombreGanador =
     ganadorPartida === "A"
       ? equipoA.join(" & ")
       : ganadorPartida === "B"
         ? equipoB.join(" & ")
         : null;
+
+  /* =========================
+     HISTORIAL
+  ========================= */
 
   const guardarEstado = () => {
 
@@ -170,6 +188,10 @@ export default function TrucoGame() {
       prev.slice(0, -1)
     );
   };
+
+  /* =========================
+     SUMAR
+  ========================= */
 
   const sumarA = (valor) => {
 
@@ -206,6 +228,10 @@ export default function TrucoGame() {
       )
     );
   };
+
+  /* =========================
+     SORTEO
+  ========================= */
 
   const sortearEquipos = () => {
 
@@ -244,7 +270,7 @@ export default function TrucoGame() {
         temp[3]
       ]);
 
-    }, 120);
+    }, 100);
 
     setTimeout(() => {
 
@@ -274,8 +300,14 @@ export default function TrucoGame() {
 
       setSorteando(false);
 
+      setShowPlayers(false);
+
     }, 3500);
   };
+
+  /* =========================
+     NUEVA PARTIDA
+  ========================= */
 
   const nuevaPartida = () => {
 
@@ -295,11 +327,50 @@ export default function TrucoGame() {
 
       <h1>TRUCO PRO</h1>
 
-      <PlayerManager
-        jugadores={jugadores}
-        setJugadores={setJugadores}
-        sortearEquipos={sortearEquipos}
-      />
+      {/* BOTON PLAYERS */}
+
+      <button
+        className="players-toggle"
+        onClick={() =>
+          setShowPlayers(true)
+        }
+      >
+        👥 Jugadores
+      </button>
+
+      {/* MODAL */}
+
+      {showPlayers && (
+
+        <div className="players-modal-overlay">
+
+          <div className="players-modal">
+
+            <button
+              className="close-modal"
+              onClick={() => {
+
+                if (!sorteando) {
+
+                  setShowPlayers(false);
+                }
+              }}
+            >
+              ✕
+            </button>
+
+            <PlayerManager
+              jugadores={jugadores}
+              setJugadores={setJugadores}
+              sortearEquipos={sortearEquipos}
+            />
+
+          </div>
+
+        </div>
+      )}
+
+      {/* MODO */}
 
       <div className="mode-selector">
 
@@ -327,6 +398,8 @@ export default function TrucoGame() {
 
       </div>
 
+      {/* ACCIONES */}
+
       <div className="top-actions">
 
         <button
@@ -338,6 +411,8 @@ export default function TrucoGame() {
 
       </div>
 
+      {/* SORTEO */}
+
       {sorteando && (
 
         <div className="shuffle-banner">
@@ -346,6 +421,8 @@ export default function TrucoGame() {
 
         </div>
       )}
+
+      {/* GANADOR */}
 
       {nombreGanador && (
 
@@ -362,6 +439,8 @@ export default function TrucoGame() {
 
         </div>
       )}
+
+      {/* EQUIPOS */}
 
       <div className="teams-container">
 
@@ -396,6 +475,8 @@ export default function TrucoGame() {
         />
 
       </div>
+
+      {/* RANKING */}
 
       <Ranking />
 
