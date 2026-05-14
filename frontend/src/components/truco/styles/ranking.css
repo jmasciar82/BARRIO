@@ -41,3 +41,32 @@
   border-bottom:
     1px solid rgba(255,255,255,0.1);
 }
+
+.ranking-container {
+  width: 100%;
+  padding: 10px;
+  overflow-x: auto; /* Permite scroll lateral si la tabla es muy grande */
+}
+
+.ranking-table {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 300px; /* Evita que se colapse demasiado */
+}
+
+.ranking-item {
+  display: flex;
+  justify-content: space-between;
+  padding: 12px 8px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.ranking-name {
+  font-weight: bold;
+  flex: 1;
+}
+
+.ranking-stats {
+  display: flex;
+  gap: 15px;
+}

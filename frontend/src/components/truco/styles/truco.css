@@ -163,7 +163,25 @@ body {
   animation:
     pulse 0.8s infinite;
 }
+.truco-main-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  max-width: 100vw;
+  padding: 10px;
+  box-sizing: border-box;
+}
 
+/* Si tenés un área de juego central */
+.game-area {
+  width: 100%;
+  max-width: 600px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
 @keyframes pulse {
 
   0% {

@@ -72,3 +72,31 @@
 
   transform: none;
 }
+
+.teams-container {
+  display: flex;
+  flex-direction: column; /* Uno arriba del otro en el celu */
+  gap: 15px;
+  width: 100%;
+  padding: 10px;
+}
+
+.team-card {
+  width: 100%; /* Ocupa todo el ancho del celu */
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 16px;
+  padding: 15px;
+  box-sizing: border-box;
+}
+
+/* Cuando la pantalla es grande (PC) */
+@media (min-width: 768px) {
+  .teams-container {
+    flex-direction: row; /* Vuelven a estar enfrentados */
+    justify-content: space-around;
+  }
+  
+  .team-card {
+    width: 45%;
+  }
+}
