@@ -1,64 +1,103 @@
+/* --- Estructura Base y Responsive --- */
+.marcador-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  max-width: 100vw;
+  padding: 10px;
+  box-sizing: border-box;
+  overflow-x: hidden;
+}
+
+/* Ranking: Uno debajo del otro en móvil, al lado en PC */
+.tablero {
+  display: flex;
+  flex-direction: column; 
+  width: 100%;
+  gap: 20px;
+  align-items: center;
+}
+
+.equipo-section {
+  width: 100%;
+  max-width: 500px;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 24px;
+  padding: 20px;
+  text-align: center;
+}
+
+/* --- Lógica de los Palitos (Cuadrados) --- */
+.group {
+  display: flex;
+  flex-wrap: wrap; /* Para que los cuadrados bajen si no entran */
+  justify-content: center;
+  gap: 10px;
+  margin: 15px 0;
+}
+
 .square {
   position: relative;
-  width: 48px;
-  height: 48px;
+  width: 42px; /* Un pelín más chico para asegurar que entren 5 en línea en móvil */
+  height: 42px;
+  flex-shrink: 0;
 }
 
 .line {
   position: absolute;
+  background-color: white; /* Color de los palitos */
 }
 
-.left {
-  width: 5px;
-  height: 100%;
-  left: 0;
-}
-
-.top {
-  width: 100%;
-  height: 5px;
-  top: 0;
-}
-
-.right {
-  width: 5px;
-  height: 100%;
-  right: 0;
-}
-
-.bottom {
-  width: 100%;
-  height: 5px;
-  bottom: 0;
-}
+.left { width: 4px; height: 100%; left: 0; }
+.top { width: 100%; height: 4px; top: 0; }
+.right { width: 4px; height: 100%; right: 0; }
+.bottom { width: 100%; height: 4px; bottom: 0; }
 
 .diagonal {
   position: absolute;
-
-  width: 5px;
-
+  width: 4px;
   height: 140%;
-
   left: 50%;
-
   top: -20%;
-
   transform: rotate(45deg);
+  background-color: white;
 }
 
-.group {
-  display: grid;
-
-  grid-auto-flow: column;
-
-  grid-template-rows: repeat(5, auto);
-
-  gap: 12px;
+/* --- Resultado del Sorteo --- */
+.resultado-sorteo {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  gap: 15px;
+  margin-top: 25px;
 }
 
-/* Media Query para cuando hay espacio (PC) */
+.equipo-box {
+  background: rgba(255, 255, 255, 0.1);
+  padding: 20px;
+  border-radius: 16px;
+  width: 100%;
+  max-width: 300px;
+}
+
+.equipo-box.azul { border-left: 5px solid #3498db; }
+.equipo-box.rojo { border-left: 5px solid #e74c3c; }
+
+/* --- MEDIA QUERIES (PC) --- */
 @media (min-width: 768px) {
-  .resultado-sorteo {
-    flex-direction: row; /* Vuelven a estar uno al lado del otro */
+  .tablero, .resultado-sorteo {
+    flex-direction: row;
+    justify-content: center;
+  }
+  
+  .square {
+    width: 48px;
+    height: 48px;
+  }
+  
+  .equipo-section {
+    width: 45%;
   }
 }
