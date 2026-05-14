@@ -22,7 +22,7 @@
 
   width: 100%;
 
-  min-height: 520px;
+  min-height: 72vh;
 }
 
 .team-panel h2 {
@@ -30,11 +30,17 @@
   text-align: center;
 
   font-size:
-    clamp(1.2rem, 4vw, 2rem);
+    clamp(1rem, 3vw, 1.8rem);
 
-  margin-bottom: 30px;
+  margin-bottom: 20px;
 
-  word-break: break-word;
+  width: 100%;
+
+  overflow: hidden;
+
+  text-overflow: ellipsis;
+
+  white-space: nowrap;
 }
 
 .score-buttons {

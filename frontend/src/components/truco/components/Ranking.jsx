@@ -56,12 +56,12 @@ export default function Ranking() {
   const jugadoresMostrar =
     expandJugadores
       ? ranking.jugadores
-      : ranking.jugadores.slice(0, 1);
+      : ranking.jugadores.slice(0, 0);
 
   const parejasMostrar =
     expandParejas
       ? ranking.parejas
-      : ranking.parejas.slice(0, 1);
+      : ranking.parejas.slice(0, 0);
 
   return (
     <div className="ranking-wrapper">

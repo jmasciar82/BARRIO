@@ -47,7 +47,11 @@ body {
   grid-template-columns:
     repeat(2, 1fr);
 
-  gap: 24px;
+  gap: 16px;
+
+  align-items: stretch;
+
+  min-height: 50vh;
 }
 
 .mode-selector {
@@ -56,11 +60,11 @@ body {
 
   justify-content: center;
 
-  gap: 20px;
+  gap: 10px;
 
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
 
-  margin-bottom: 24px;
+ 
 }
 
 .mode-selector button {
@@ -297,7 +301,6 @@ body {
     gap: 12px;
   }
 }
-
 @media (max-width: 600px) {
 
   .truco-app {
@@ -307,10 +310,24 @@ body {
 
   .mode-selector {
 
-    flex-direction: column;
+    display: flex;
+
+
+    flex-direction: row;
+
+    justify-content: center;
+
+    margin-bottom: 20px;
+    gap: 20px;
   }
 
-  .mode-selector button,
+  .mode-selector button {
+
+    flex: 1;
+
+    max-width: 140px;
+  }
+
   .undo-btn,
   .new-game-btn {
 
