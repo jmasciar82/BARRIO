@@ -55,3 +55,10 @@
 
   gap: 12px;
 }
+
+/* Media Query para cuando hay espacio (PC) */
+@media (min-width: 768px) {
+  .resultado-sorteo {
+    flex-direction: row; /* Vuelven a estar uno al lado del otro */
+  }
+}

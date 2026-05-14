@@ -144,3 +144,10 @@
   background:
     rgba(255,255,255,0.24);
 }
+
+@media (min-width: 768px) {
+  .shuffle-btn {
+    width: auto; /* En PC solo ocupa lo necesario */
+    padding: 15px 40px;
+  }
+}
