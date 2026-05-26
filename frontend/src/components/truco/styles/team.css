@@ -1,28 +1,16 @@
 .team-panel {
-
-  background:
-    rgba(255, 255, 255, 0.08);
-
-  backdrop-filter:
-    blur(10px);
-
-  border-radius: 28px;
-
   padding: 24px;
-
   display: flex;
-
   flex-direction: column;
-
   align-items: center;
-
   justify-content: space-between;
-
   color: white;
-
   width: 100%;
-
   min-height: 72vh;
+}
+
+.team-panel:first-child {
+  border-right: 2px solid rgba(0, 0, 0, 0.5);
 }
 
 .team-panel h2 {
@@ -44,15 +32,12 @@
 }
 
 .score-buttons {
-
   display: grid;
-
-  grid-template-columns:
-    repeat(2, 1fr);
-
+  grid-template-columns: repeat(2, 1fr);
   gap: 12px;
-
   width: 100%;
+  border-top: 2px solid rgba(0, 0, 0, 0.5);
+  padding-top: 20px;
 }
 
 .score-buttons button {

@@ -46,27 +46,26 @@ const Reservation = () => {
     fetchReservations(selectedDate);
   }, [selectedDate, fetchReservations]);
 
+  // Nuevo mapa de reservas O(1)
+  const reservationsMap = React.useMemo(() => {
+    const map = {};
+    const dateString = toDateString(selectedDate);
+    reservations.forEach(r => {
+      if (r.date === dateString) {
+        if (!map[r.grillNumber]) map[r.grillNumber] = {};
+        map[r.grillNumber][r.shift] = r.user;
+      }
+    });
+    return map;
+  }, [reservations, selectedDate]);
+
   // Ver si una parrilla está reservada
   const isGrillReserved = (grillNum, shiftType) => {
-    const dateString = toDateString(selectedDate);
-
-    return reservations.some(r =>
-      r.grillNumber === grillNum &&
-      r.shift === shiftType &&
-      r.date === dateString
-    );
+    return !!reservationsMap[grillNum]?.[shiftType];
   };
 
   const findReservationUser = (grillNum, shiftType) => {
-    const dateString = toDateString(selectedDate);
-
-    const res = reservations.find(r =>
-      r.grillNumber === grillNum &&
-      r.shift === shiftType &&
-      r.date === dateString
-    );
-
-    return res ? res.user : '';
+    return reservationsMap[grillNum]?.[shiftType] || '';
   };
 
   // Crear reserva
@@ -137,15 +136,27 @@ const Reservation = () => {
         </div>
 
         <div className="form-group">
-          <label>Parrilla</label>
-          <select
-            value={grillNumber}
-            onChange={e => setGrillNumber(Number(e.target.value))}
-          >
-            {[1, 2, 3, 4, 5].map(num => (
-              <option key={num} value={num}>{`Parrilla ${num}`}</option>
-            ))}
-          </select>
+          <label>Selecciona una Parrilla</label>
+          <div className="grill-selector">
+            {[1, 2, 3, 4, 5].map(num => {
+              const reservedBy = findReservationUser(num, shift);
+              const isReserved = !!reservedBy;
+              return (
+                <div
+                  key={num}
+                  className={`grill-card ${grillNumber === num ? 'selected' : ''} ${isReserved ? 'reserved' : ''}`}
+                  onClick={() => {
+                    if (!isReserved) setGrillNumber(num);
+                  }}
+                >
+                  <div className="grill-card-title">Parrilla {num}</div>
+                  <div className="grill-card-status">
+                    {isReserved ? 'Ocupada' : 'Disponible'}
+                  </div>
+                </div>
+              );
+            })}
+          </div>
         </div>
 
         <div className="form-group">
@@ -193,12 +204,12 @@ const Reservation = () => {
               {[1, 2, 3, 4, 5].map(num => (
                 <tr key={num}>
                   <td>{num}</td>
-                  <td>
+                  <td className={isGrillReserved(num, 'dia') ? 'reserved-cell' : 'available-cell'}>
                     {isGrillReserved(num, 'dia')
                       ? `Ocupada por ${findReservationUser(num, 'dia')}`
                       : 'Disponible'}
                   </td>
-                  <td>
+                  <td className={isGrillReserved(num, 'noche') ? 'reserved-cell' : 'available-cell'}>
                     {isGrillReserved(num, 'noche')
                       ? `Ocupada por ${findReservationUser(num, 'noche')}`
                       : 'Disponible'}

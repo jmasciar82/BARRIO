@@ -26,10 +26,13 @@ export default function Marcador({
       />
 
       {modo === 30 && buenas > 0 && (
-        <Grupo
-          puntos={buenas}
-          color="#00ff88"
-        />
+        <>
+          <div className="score-divider" />
+          <Grupo
+            puntos={buenas}
+            color="#00ff88"
+          />
+        </>
       )}
 
     </div>
