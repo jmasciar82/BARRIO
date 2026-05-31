@@ -9,15 +9,17 @@ import TeamPanel
 import PlayerManager
   from "./components/PlayerManager";
 
+/*
 import Ranking
   from "./components/Ranking";
+*/
 
 import {
   guardarPartida
 } from "./services/trucoApi";
 
 import "./styles/truco.css";
-import "./styles/ranking.css";
+// import "./styles/ranking.css";
 
 export default function TrucoGame() {
 
@@ -475,10 +477,9 @@ export default function TrucoGame() {
         />
 
       </div>
-
       {/* RANKING */}
 
-      <Ranking />
+      {/* <Ranking /> */}
 
     </div>
   );

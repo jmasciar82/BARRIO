@@ -124,12 +124,6 @@ const Welcome = () => {
       <Link to="/reservas" className="reservation-link">
         Reservar Parrilla
       </Link>
-
-      <hr />
-
-      <Link to="/truco" className="reservation-link">
-        Anotador de Truco
-      </Link>
     </div>
   );
 };
