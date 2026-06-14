@@ -13,6 +13,8 @@ import metasRecordsRoutes from './routes/metasRecords.js';
 import metasDashboardRoutes from './routes/metasDashboard.js';
 
 import trucoRoutes from './routes/truco.routes.js';
+import https from 'https';
+
 // Importar __dirname en ES module
 const __dirname = path.resolve();
 
@@ -20,6 +22,27 @@ const __dirname = path.resolve();
 dotenv.config();
 
 const app = express();
+
+// Ruta de health check
+app.get('/api/health', (req, res) => {
+  res.status(200).json({
+    status: "ok",
+    timestamp: new Date()
+  });
+});
+
+// Auto-ping para evitar que Render se duerma (Free Tier)
+const RENDER_URL = process.env.RENDER_EXTERNAL_URL;
+if (RENDER_URL) {
+  console.log(`🟢 Auto-ping configurado para la URL: ${RENDER_URL}`);
+  setInterval(() => {
+    https.get(`${RENDER_URL}/api/health`, (res) => {
+      console.log(`Self-ping exitoso: ${res.statusCode}`);
+    }).on('error', (err) => {
+      console.error('Self-ping fallido:', err.message);
+    });
+  }, 10 * 60 * 1000); // Cada 10 minutos (Render se duerme tras 15 minutos de inactividad)
+}
 
 // Middleware
 app.use(cors({
