@@ -142,6 +142,7 @@ export default function TrucoGame() {
 
     guardar();
 
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
     ganadorPartida
   ]);

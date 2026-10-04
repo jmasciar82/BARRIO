@@ -11,7 +11,7 @@ const Dashboard = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
 
-  const hoy = new Date().toISOString().slice(0, 10);
+  // const hoy = new Date().toISOString().slice(0, 10);
 
   const fetchMetas = async () => {
     try {

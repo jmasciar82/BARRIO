@@ -5,6 +5,7 @@ import './Welcome.css';
 const Welcome = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [motivationalMessage, setMotivationalMessage] = useState('');
+  // eslint-disable-next-line no-unused-vars
   const [serverReady, setServerReady] = useState(false);
 
   const motivationalMessages = [
@@ -102,6 +103,7 @@ const Welcome = () => {
       clearInterval(messageInterval);
       clearInterval(statusCheckInterval);
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   if (isLoading) {
