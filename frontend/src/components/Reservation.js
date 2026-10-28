@@ -5,6 +5,7 @@ import axios from 'axios';
 import backendURL from '../config.js';
 import { format } from 'date-fns';
 import { es } from 'date-fns/locale';
+import { getHolidayOrSeasonTheme } from '../utils/holidayTheme';
 import './Reservation.css';
 
 const Reservation = () => {
@@ -16,6 +17,8 @@ const Reservation = () => {
   const [message, setMessage] = useState({ text: '', type: '' });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
+
+  const activeTheme = getHolidayOrSeasonTheme(selectedDate || new Date());
 
   // ✅ FECHA LOCAL — SIN UTC — SIN ISO
   const toDateString = (date) => {
@@ -111,114 +114,136 @@ const Reservation = () => {
     }
   };
 
+  const pageBackgroundStyle = {
+    backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.45), rgba(0, 0, 0, 0.45)), url("${activeTheme.background}")`,
+    backgroundPosition: 'center',
+    backgroundSize: 'cover',
+    backgroundAttachment: 'fixed',
+  };
+
   return (
-    <div className="reservation-form">
-      <h2>Reserva Tu Parrilla</h2>
-
-      <form onSubmit={handleSubmit}>
-        <div className="form-group">
-          <label>Fecha</label>
-          <DatePicker
-            className="fecha"
-            selected={selectedDate}
-            onChange={date => setSelectedDate(date)}
-            dateFormat="yyyy-MM-dd"
-            locale={es}
-          />
-        </div>
-
-        <div className="form-group">
-          <label>Turno</label>
-          <select value={shift} onChange={e => setShift(e.target.value)}>
-            <option value="dia">Mañana</option>
-            <option value="noche">Noche</option>
-          </select>
-        </div>
-
-        <div className="form-group">
-          <label>Selecciona una Parrilla</label>
-          <div className="grill-selector">
-            {[1, 2, 3, 4, 5].map(num => {
-              const reservedBy = findReservationUser(num, shift);
-              const isReserved = !!reservedBy;
-              return (
-                <div
-                  key={num}
-                  className={`grill-card ${grillNumber === num ? 'selected' : ''} ${isReserved ? 'reserved' : ''}`}
-                  onClick={() => {
-                    if (!isReserved) setGrillNumber(num);
-                  }}
-                >
-                  <div className="grill-card-title">Parrilla {num}</div>
-                  <div className="grill-card-status">
-                    {isReserved ? 'Ocupada' : 'Disponible'}
-                  </div>
-                </div>
-              );
-            })}
+    <div className="reservation-page-wrapper" style={pageBackgroundStyle}>
+      <div className="reservation-form">
+        {activeTheme.badge && (
+          <div
+            className="reservation-holiday-banner"
+            style={{ background: activeTheme.buttonGradient }}
+          >
+            {activeTheme.badge}
           </div>
-        </div>
-
-        <div className="form-group">
-          <label>Torre - Piso - Dpto</label>
-          <input
-            type="text"
-            value={userName}
-            onChange={e => setUserName(e.target.value)}
-            placeholder="Torre - Piso - Dpto"
-            required
-          />
-        </div>
-
-        <button type="submit" disabled={isSubmitting}>
-          {isSubmitting ? 'Reservando...' : 'Reservar'}
-        </button>
-      </form>
-
-      {message.text && (
-        <div className={`message ${message.type}`}>
-          {message.text}
-        </div>
-      )}
-
-      <div className="availability-table">
-        <h3>
-          Estado de Reservas – {format(selectedDate, 'PPPP', { locale: es })}
-        </h3>
-
-        {isLoading ? (
-          <>
-            <div className="loading-message">Cargando reservas...</div>
-            <div className="spinner"></div>
-          </>
-        ) : (
-          <table>
-            <thead>
-              <tr>
-                <th>Parrilla</th>
-                <th>Mañana (12-18hs)</th>
-                <th>Noche (19-24hs)</th>
-              </tr>
-            </thead>
-            <tbody>
-              {[1, 2, 3, 4, 5].map(num => (
-                <tr key={num}>
-                  <td>{num}</td>
-                  <td className={isGrillReserved(num, 'dia') ? 'reserved-cell' : 'available-cell'}>
-                    {isGrillReserved(num, 'dia')
-                      ? `Ocupada por ${findReservationUser(num, 'dia')}`
-                      : 'Disponible'}
-                  </td>
-                  <td className={isGrillReserved(num, 'noche') ? 'reserved-cell' : 'available-cell'}>
-                    {isGrillReserved(num, 'noche')
-                      ? `Ocupada por ${findReservationUser(num, 'noche')}`
-                      : 'Disponible'}
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
         )}
+
+        <h2>Reserva Tu Parrilla</h2>
+
+        <form onSubmit={handleSubmit}>
+          <div className="form-group">
+            <label>Fecha</label>
+            <DatePicker
+              className="fecha"
+              selected={selectedDate}
+              onChange={date => date && setSelectedDate(date)}
+              dateFormat="yyyy-MM-dd"
+              locale={es}
+            />
+          </div>
+
+          <div className="form-group">
+            <label>Turno</label>
+            <select value={shift} onChange={e => setShift(e.target.value)}>
+              <option value="dia">Mañana</option>
+              <option value="noche">Noche</option>
+            </select>
+          </div>
+
+          <div className="form-group">
+            <label>Selecciona una Parrilla</label>
+            <div className="grill-selector">
+              {[1, 2, 3, 4, 5].map(num => {
+                const reservedBy = findReservationUser(num, shift);
+                const isReserved = !!reservedBy;
+                return (
+                  <div
+                    key={num}
+                    className={`grill-card ${grillNumber === num ? 'selected' : ''} ${isReserved ? 'reserved' : ''}`}
+                    onClick={() => {
+                      if (!isReserved) setGrillNumber(num);
+                    }}
+                  >
+                    <div className="grill-card-title">Parrilla {num}</div>
+                    <div className="grill-card-status">
+                      {isReserved ? 'Ocupada' : 'Disponible'}
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+
+          <div className="form-group">
+            <label>Torre - Piso - Dpto</label>
+            <input
+              type="text"
+              value={userName}
+              onChange={e => setUserName(e.target.value)}
+              placeholder="Torre - Piso - Dpto"
+              required
+            />
+          </div>
+
+          <button
+            type="submit"
+            disabled={isSubmitting}
+            style={activeTheme.isHoliday ? { background: activeTheme.buttonGradient } : undefined}
+          >
+            {isSubmitting ? 'Reservando...' : 'Reservar'}
+          </button>
+        </form>
+
+        {message.text && (
+          <div className={`message ${message.type}`}>
+            {message.text}
+          </div>
+        )}
+
+        <div className="availability-table">
+          <h3>
+            Estado de Reservas – {format(selectedDate, 'PPPP', { locale: es })}
+          </h3>
+
+          {isLoading ? (
+            <>
+              <div className="loading-message">Cargando reservas...</div>
+              <div className="spinner"></div>
+            </>
+          ) : (
+            <table>
+              <thead>
+                <tr>
+                  <th>Parrilla</th>
+                  <th>Mañana (12-18hs)</th>
+                  <th>Noche (19-24hs)</th>
+                </tr>
+              </thead>
+              <tbody>
+                {[1, 2, 3, 4, 5].map(num => (
+                  <tr key={num}>
+                    <td>{num}</td>
+                    <td className={isGrillReserved(num, 'dia') ? 'reserved-cell' : 'available-cell'}>
+                      {isGrillReserved(num, 'dia')
+                        ? `Ocupada por ${findReservationUser(num, 'dia')}`
+                        : 'Disponible'}
+                    </td>
+                    <td className={isGrillReserved(num, 'noche') ? 'reserved-cell' : 'available-cell'}>
+                      {isGrillReserved(num, 'noche')
+                        ? `Ocupada por ${findReservationUser(num, 'noche')}`
+                        : 'Disponible'}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          )}
+        </div>
       </div>
     </div>
   );

@@ -15,13 +15,33 @@
   --transition: all 0.3s ease;
 }
 
+.reservation-page-wrapper {
+  min-height: 100vh;
+  padding: 2rem 1rem;
+  box-sizing: border-box;
+  transition: background-image 0.5s ease-in-out;
+}
+
+.reservation-holiday-banner {
+  text-align: center;
+  padding: 0.75rem 1.25rem;
+  margin-bottom: 1.25rem;
+  border-radius: 50px;
+  color: #fff;
+  font-weight: 700;
+  font-size: 1.05rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.4);
+}
+
 .reservation-form {
   max-width: 900px;
-  margin: 2rem auto;
+  margin: 0 auto;
   padding: 2rem;
-  background: var(--white);
+  background: rgba(255, 255, 255, 0.96);
+  backdrop-filter: blur(6px);
   border-radius: var(--border-radius);
-  box-shadow: var(--box-shadow);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   color: var(--text-color);
 }
@@ -294,9 +314,18 @@ button[type="submit"]:disabled {
 
 /* Responsive design */
 @media (max-width: 768px) {
+  .reservation-page-wrapper {
+    padding: 1rem 0.5rem;
+  }
+
   .reservation-form {
     padding: 1.5rem;
-    margin: 1rem;
+    margin: 0 auto;
+  }
+
+  .reservation-holiday-banner {
+    font-size: 0.9rem;
+    padding: 0.6rem 1rem;
   }
 
   .availability-table th,

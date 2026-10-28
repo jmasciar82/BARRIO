@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import { getHolidayOrSeasonTheme } from '../utils/holidayTheme';
 import './Welcome.css';
 
 const Welcome = () => {
@@ -7,6 +8,8 @@ const Welcome = () => {
   const [motivationalMessage, setMotivationalMessage] = useState('');
   // eslint-disable-next-line no-unused-vars
   const [serverReady, setServerReady] = useState(false);
+
+  const currentTheme = getHolidayOrSeasonTheme(new Date());
 
   const motivationalMessages = [
     "Preparando todo para tu mejor experiencia...",
@@ -22,45 +25,12 @@ const Welcome = () => {
     return motivationalMessages[randomIndex];
   };
 
-  const getBackgroundImage = () => {
-    const today = new Date();
-    const month = today.getMonth() + 1; // 1-12
-    const day = today.getDate();
-    const year = today.getFullYear();
-
-    // Mundial 2026: Junio 11 - Julio 19
-    if (year === 2026 && ((month === 6 && day >= 11) || (month === 7 && day <= 19))) {
-      return '/assets/backgrounds/fondo_mundial_1779764916277.png';
-    }
-
-    // Fechas patrias (25 de mayo, 20 de junio, 9 de julio)
-    if ((month === 5 && day === 25) || (month === 6 && day === 20) || (month === 7 && day === 9)) {
-      return '/assets/backgrounds/fondo_patrio_1779764902332.png';
-    }
-
-    // Estaciones (Hemisferio Sur)
-    // Verano: Dic 21 - Mar 20
-    if ((month === 12 && day >= 21) || month === 1 || month === 2 || (month === 3 && day <= 20)) {
-      return '/assets/backgrounds/fondo_verano_1779764842474.png';
-    }
-    // Otoño: Mar 21 - Jun 20
-    if ((month === 3 && day >= 21) || month === 4 || month === 5 || (month === 6 && day <= 20)) {
-      return '/assets/backgrounds/fondo_otono_1779764858267.png';
-    }
-    // Invierno: Jun 21 - Sep 20
-    if ((month === 6 && day >= 21) || month === 7 || month === 8 || (month === 9 && day <= 20)) {
-      return '/assets/backgrounds/fondo_invierno_1779764872297.png';
-    }
-    // Primavera: Sep 21 - Dic 20
-    if ((month === 9 && day >= 21) || month === 10 || month === 11 || (month === 12 && day <= 20)) {
-      return '/assets/backgrounds/fondo_primavera_1779764886087.png';
-    }
-
-    return '/assets/backgrounds/fondo_verano_1779764842474.png'; // fallback
+  const dynamicBackgroundStyle = {
+    background: `linear-gradient(rgba(0, 0, 0, 0.45), rgba(0, 0, 0, 0.45)), url("${currentTheme.background}") center / cover no-repeat`
   };
 
-  const dynamicBackgroundStyle = {
-    background: `linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)), url("${getBackgroundImage()}") center / cover no-repeat`
+  const dynamicButtonStyle = {
+    background: currentTheme.buttonGradient
   };
 
   const checkServerStatus = async () => {
@@ -109,6 +79,9 @@ const Welcome = () => {
   if (isLoading) {
     return (
       <div className="welcome-container" style={dynamicBackgroundStyle}>
+        {currentTheme.badge && (
+          <div className="holiday-badge">{currentTheme.badge}</div>
+        )}
         <h1>Barrio Tiro Federal</h1>
         <div className="spinner-container">
           <div className="spinner"></div>
@@ -120,10 +93,13 @@ const Welcome = () => {
 
   return (
     <div className="welcome-container" style={dynamicBackgroundStyle}>
+      {currentTheme.badge && (
+        <div className="holiday-badge">{currentTheme.badge}</div>
+      )}
       <h1>Bienvenido al Barrio Tiro Federal</h1>
-      <p>¡Gracias por visitar nuestro sitio web!</p>
+      <p>{currentTheme.subtitle}</p>
 
-      <Link to="/reservas" className="reservation-link">
+      <Link to="/reservas" className="reservation-link" style={dynamicButtonStyle}>
         Reservar Parrilla
       </Link>
     </div>
