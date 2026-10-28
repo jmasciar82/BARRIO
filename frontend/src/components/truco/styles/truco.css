@@ -1,25 +1,15 @@
-body {
-  margin: 0;
-  font-family: sans-serif;
-  background: url('../../../assets/wood_bg.png') center / cover no-repeat fixed, #2a1608;
-  min-height: 100vh;
-  color: #f2f2f7;
-}
-
 * {
-
   box-sizing: border-box;
 }
 
 .truco-app {
-
   width: 100%;
-
-  max-width: 1400px;
-
+  min-height: 100vh;
   margin: 0 auto;
-
   padding: 20px;
+  font-family: sans-serif;
+  background: url('../../../assets/wood_bg.png') center / cover no-repeat fixed, #2a1608;
+  color: #f2f2f7;
 }
 
 .truco-app h1 {
